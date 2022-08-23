@@ -2,6 +2,16 @@
     "name": "antwerpes/typo3-docchecklogin",
     "type": "typo3-cms-extension",
     "description": "",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "version": "0.1",
+    "keywords": [
+        "antwerpes",
+        "docchecklogin",
+        "typo3",
+        "typo3-docchecklogin"
+    ],
+    "homepage": "https://github.com/antwerpes/typo3_docchecklogin",
     "authors": [
         {
             "name": "Sabrina Zwirner",
@@ -12,8 +22,9 @@
             "role": "Developer"
         }
     ],
-    "license": "GPL-2.0-or-later",
+    "license": "MIT",
     "require": {
+        "ext-curl": "*",
         "typo3/cms-core": "^11.5"
     },
     "require-dev": {
@@ -33,6 +44,7 @@
         "typo3-ter/typo3-docchecklogin": "self.version"
     },
     "config": {
+        "sort-packages": true,
         "vendor-dir": ".Build/vendor",
         "bin-dir": ".Build/bin"
     },
