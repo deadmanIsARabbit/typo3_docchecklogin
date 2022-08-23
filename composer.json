@@ -1,7 +1,7 @@
 {
     "name": "antwerpes/typo3-docchecklogin",
     "type": "typo3-cms-extension",
-    "description": "",
+    "description": "Integrate DocCheck Login with your Project",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "version": "0.1",
