@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" target-language="de" datatype="plaintext" original="EXT:typo3_docchecklogin/Resources/Private/Language/locallang_frontend.xlf" date="2022-08-23T12:37:29Z" product-name="typo3_docchecklogin">
+		<header/>
+		<body>
+			<trans-unit id="loggedInText" resname="loggedInText">
+				<source>You are logged in as DocCheck User.</source>
+				<target>Sie sind eingeloggt als DocCheck User.</target>
+			</trans-unit>
+			<trans-unit id="logout" resname="logout">
+				<source>Logout</source>
+				<target>Abmelden</target>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

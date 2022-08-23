@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf" date="2022-08-23T12:35:56Z" product-name="typo3_docchecklogin">
+		<header/>
+		<body>
+			<trans-unit id="plugin.name" resname="plugin.name">
+				<source>DocCheck Login</source>
+			</trans-unit>
+			<trans-unit id="plugin.description" resname="plugin.description">
+                <source>Integrate DocCheck Login in your Project</source>
+            </trans-unit>
+			<trans-unit id="flexform.generaltab" resname="flexform.generaltab">
+				<source>General</source>
+			</trans-unit>
+			<trans-unit id="flexform.loginId" resname="flexform.loginId">
+				<source>Login ID</source>
+			</trans-unit>
+			<trans-unit id="flexform.loginLayout" resname="flexform.loginLayout">
+				<source>Login-Template</source>
+			</trans-unit>
+			<trans-unit id="flexform.loginLayout.custom" resname="flexform.loginLayout.custom">
+				<source>Custom Template (specify)</source>
+			</trans-unit>
+			<trans-unit id="flexform.customLayout" resname="flexform.customLayout">
+				<source>Custom Template Key (opt.)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language" resname="flexform.language">
+				<source>Language</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.de" resname="flexform.language.de">
+				<source>German (Germany)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.chde" resname="flexform.language.chde">
+				<source>German (Switzerland)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.at" resname="flexform.language.at">
+				<source>German (Austria)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.com" resname="flexform.language.com">
+				<source>English</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.befr" resname="flexform.language.befr">
+				<source>French (Belgium)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.fr" resname="flexform.language.fr">
+				<source>French (France)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.chfr" resname="flexform.language.chfr">
+				<source>French (Switzerland)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.it" resname="flexform.language.it">
+				<source>Italian (Italy)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.benl" resname="flexform.language.benl">
+				<source>Dutch (Belgium)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.nl" resname="flexform.language.nl">
+				<source>Dutch (Netherlands)</source>
+			</trans-unit>
+			<trans-unit id="flexform.language.es" resname="flexform.language.es">
+				<source>Spanish (Spain)</source>
+			</trans-unit>
+			<trans-unit id="flexform.redirect" resname="flexform.redirect">
+				<source>Redirect after Login (will be overridden by ?redirect_url)</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

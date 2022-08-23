@@ -1,0 +1,10 @@
+plugin.tx_typo3docchecklogin {
+    view {
+        # cat=plugin.tx_typo3docchecklogin/file; type=string; label=Path to template root (FE)
+        templateRootPath = EXT:typo3_docchecklogin/Resources/Private/Templates/
+        # cat=plugin.tx_typo3docchecklogin/file; type=string; label=Path to template partials (FE)
+        partialRootPath = EXT:typo3_docchecklogin/Resources/Private/Partials/
+        # cat=plugin.tx_typo3docchecklogin/file; type=string; label=Path to template layouts (FE)
+        layoutRootPath = EXT:typo3_docchecklogin/Resources/Private/Layouts/
+    }
+}
