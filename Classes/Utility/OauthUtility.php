@@ -26,7 +26,7 @@ class OauthUtility
     {
         if ($GLOBALS['DC_ACCESS_TOKEN']) {
             $curl = curl_init();
-            curl_setopt_array($curl, array(
+            curl_setopt_array($curl, [
                 CURLOPT_URL => $this->validateTokenUrl . '?access_token=' . $GLOBALS['DC_ACCESS_TOKEN'],
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
@@ -35,19 +35,17 @@ class OauthUtility
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'GET',
-            ));
+            ]);
 
             $response = json_decode(curl_exec($curl));
             curl_close($curl);
 
             if ($response->boolIsValid) {
                 return true;
-            } else {
-                return $this->refreshToken($clientId, $clientSecret, $code);
             }
-        } else {
-            return $this->generateToken($clientId, $clientSecret, $code);
+            return $this->refreshToken($clientId, $clientSecret, $code);
         }
+        return $this->generateToken($clientId, $clientSecret, $code);
     }
 
     /**
@@ -68,13 +66,11 @@ class OauthUtility
             $GLOBALS['DC_ACCESS_TOKEN'] = $response->access_token;
             $GLOBALS['DC_REFRESH_TOKEN'] = $response->refresh_token;
             return true;
-        } else {
-            throw new InvalidRequestTokenException(
-                'DocCheck Authentication: There was a Problem in receiving the access token'
-            );
         }
+        throw new InvalidRequestTokenException(
+            'DocCheck Authentication: There was a Problem in receiving the access token'
+        );
     }
-
 
     /**
      * Refresh the Access Token with the given refresh Token
@@ -95,11 +91,10 @@ class OauthUtility
             if ($response->access_token) {
                 $GLOBALS['DC_ACCESS_TOKEN'] = $response->access_token;
                 return true;
-            } else {
-                throw new InvalidRequestTokenException(
-                    'DocCheck Authentication: There was a Problem in refreshing the access token'
-                );
             }
+            throw new InvalidRequestTokenException(
+                'DocCheck Authentication: There was a Problem in refreshing the access token'
+            );
         } else {
             return $this->generateToken($clientId, $clientSecret, $code);
         }
@@ -112,17 +107,16 @@ class OauthUtility
      */
     public function getUserData()
     {
-        if($GLOBALS['DC_ACCESS_TOKEN']){
+        if ($GLOBALS['DC_ACCESS_TOKEN']) {
             $url = $this->userDataUrl . '?access_token=' . $GLOBALS['DC_ACCESS_TOKEN'];
             $response = $this->createCurl($url);
             if ($response->uniquekey) {
                 return $response;
-            } else {
-                throw new InvalidRequestTokenException(
-                    'DocCheck Authentication: No User Found with given access token'
-                );
             }
-        }else{
+            throw new InvalidRequestTokenException(
+                'DocCheck Authentication: No User Found with given access token'
+            );
+        } else {
             throw new InvalidRequestTokenException(
                 'DocCheck Authentication: No User Found'
             );
@@ -134,10 +128,11 @@ class OauthUtility
      * @param $url
      * @return mixed
      */
-    public function createCurl($url){
+    public function createCurl($url)
+    {
         $curl = curl_init();
 
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
@@ -146,7 +141,7 @@ class OauthUtility
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
+        ]);
 
         $response = json_decode(curl_exec($curl));
         curl_close($curl);

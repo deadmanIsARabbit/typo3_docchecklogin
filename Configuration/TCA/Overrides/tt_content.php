@@ -1,6 +1,6 @@
 <?php
-defined('TYPO3_MODE') || die();
 
+defined('TYPO3_MODE') || die();
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Typo3Docchecklogin',
@@ -19,4 +19,3 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$pluginSignat
     // Flexform configuration schema file
     'FILE:EXT:typo3_docchecklogin/Configuration/FlexForms/Setup.xml'
 );
-

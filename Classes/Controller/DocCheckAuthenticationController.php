@@ -34,11 +34,9 @@ namespace Antwerpes\Typo3Docchecklogin\Controller;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Plugin 'DocCheck Authentication' for the 'typo3_docchecklogin' extension.
- *
  */
 class DocCheckAuthenticationController extends ActionController
 {
@@ -129,7 +127,7 @@ class DocCheckAuthenticationController extends ActionController
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
         $statement = $queryBuilder->select('felogin_redirectPid')
             ->from('fe_groups')
-            ->where('felogin_redirectPid<>\'\' AND uid IN ('.implode(',', $groupData['uid']).')')
+            ->where('felogin_redirectPid<>\'\' AND uid IN (' . implode(',', $groupData['uid']) . ')')
             ->execute();
 
         while ($row = $statement->fetch()) {
@@ -153,10 +151,10 @@ class DocCheckAuthenticationController extends ActionController
         }
         if ($redirectUrl) {
             // store as cookie and expire in 10 minutes
-            setcookie('ap_docchecklogin_redirect', $redirectUrl, intval(gmdate('U')) + 600, '/');
+            setcookie('ap_docchecklogin_redirect', $redirectUrl, (int)(gmdate('U')) + 600, '/');
         } else {
             // delete an older cookie if no longer needed
-            setcookie('ap_docchecklogin_redirect', '', intval(gmdate('U')) - 3600, '/');
+            setcookie('ap_docchecklogin_redirect', '', (int)(gmdate('U')) - 3600, '/');
         }
 
         $loginId = $this->settings['loginId'];
@@ -169,22 +167,19 @@ class DocCheckAuthenticationController extends ActionController
         if ($this->settings['loginLayout'] === 'custom') {
             $templateKey = $this->settings['customLayout'];
         } else {
-            $templateKey = $this->settings['loginLayout'].'_red';
+            $templateKey = $this->settings['loginLayout'] . '_red';
         }
 
         $this->view->assign('loginId', $loginId);
         $this->view->assign('templateKey', $templateKey);
     }
 
-    /**
-     * @return null
-     */
     public function getRedirectUriFromCookie()
     {
         if (array_key_exists('ap_docchecklogin_redirect', $_COOKIE)) {
             // clear the cookie
             $redirectUri = $_COOKIE['ap_docchecklogin_redirect'];
-            setcookie('ap_docchecklogin_redirect', '', intval(gmdate('U')) - 3600, '/');
+            setcookie('ap_docchecklogin_redirect', '', (int)(gmdate('U')) - 3600, '/');
 
             return $redirectUri;
         }
@@ -192,9 +187,6 @@ class DocCheckAuthenticationController extends ActionController
         return null;
     }
 
-    /**
-     * @return null
-     */
     public function getRedirectUriFromFeLogin()
     {
         // user configuration takes precedence

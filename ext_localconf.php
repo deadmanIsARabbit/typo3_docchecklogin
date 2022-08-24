@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') or die();
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -33,15 +34,14 @@ defined('TYPO3') or die();
        }'
 );
 
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
-// Extension Key
+    // Extension Key
     'typo3_docchecklogin',
     // Service type
     'auth',
     // Service key
     'docchecklogin',
-    array(
+    [
         'title' => 'DocCheck Authentication Service',
         'description' => 'Authenticates users through the DocCheck Authentication Service',
 
@@ -54,6 +54,6 @@ defined('TYPO3') or die();
         'os' => '',
         'exec' => '',
 
-        'className' => \Antwerpes\Typo3Docchecklogin\Service\DocCheckAuthenticationService::class
-    )
+        'className' => \Antwerpes\Typo3Docchecklogin\Service\DocCheckAuthenticationService::class,
+    ]
 );

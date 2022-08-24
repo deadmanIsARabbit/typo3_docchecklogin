@@ -1,4 +1,5 @@
 <?php
+
 namespace Antwerpes\Typo3Docchecklogin\Service;
 
 use Antwerpes\Typo3Docchecklogin\Utility\OauthUtility;
@@ -30,7 +31,7 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     public function bypassLoginForCrawling()
     {
-       #TODO:create Crawler Bypass
+        //TODO:create Crawler Bypass
     }
 
     /**
@@ -63,7 +64,6 @@ class DocCheckAuthenticationService extends AuthenticationService
      *
      * @return array user array
      * @throws \Exception
-     *
      */
     protected function getUniqueUser($dcVal, $dcCode, $dcClientSecret, $dcLoginId)
     {
@@ -204,7 +204,6 @@ class DocCheckAuthenticationService extends AuthenticationService
      *
      * @return int group id
      * @throws \Exception
-     *
      */
     protected function getUniqueUserGroupId($dcVal)
     {
@@ -225,7 +224,7 @@ class DocCheckAuthenticationService extends AuthenticationService
         // cast as int
         $grp = intval($grp, 10);
 
-        if (null === $this->fetchGroupRecord($grp, $this->extConf['dummyUserPid'])) {
+        if ($this->fetchGroupRecord($grp, $this->extConf['dummyUserPid']) === null) {
             // whoops, no group found
             throw new \Exception('DocCheck Authentication: Could not find front end user group ' . $grp);
         }
@@ -243,7 +242,7 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function fetchGroupRecord($groupId, $pid)
     {
-        if (!is_int($groupId) || 0 === $groupId) {
+        if (!is_int($groupId) || $groupId === 0) {
             return null;
         }
 
@@ -251,7 +250,7 @@ class DocCheckAuthenticationService extends AuthenticationService
 
         $dbGroups = $this->db_groups;
 
-        $groupIdClause = 'uid = ' . intval($groupId, 10) . ' AND pid = ' . intval($pid) . ' AND deleted = 0 AND hidden = 0';
+        $groupIdClause = 'uid = ' . intval($groupId, 10) . ' AND pid = ' . (int)$pid . ' AND deleted = 0 AND hidden = 0';
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($dbGroups['table']);
         $statement = $queryBuilder->select('*')
@@ -295,7 +294,6 @@ class DocCheckAuthenticationService extends AuthenticationService
      *
      * @return mixed Array of all users matching current IP
      * @throws \Exception
-     *
      */
     public function getUser()
     {
@@ -356,7 +354,6 @@ class DocCheckAuthenticationService extends AuthenticationService
             }
         }
 
-
         return $ok;
     }
 
@@ -397,7 +394,7 @@ class DocCheckAuthenticationService extends AuthenticationService
         }
         // find the correct group
         $expectedGroupId = $this->getUniqueUserGroupId($dcVal);
-        $actualGroupId = intval($user[$this->db_user['usergroup_column']]);
+        $actualGroupId = (int)($user[$this->db_user['usergroup_column']]);
         // the given dcval does not match any configured group id
         if (!$actualGroupId) {
             return false;
@@ -414,9 +411,8 @@ class DocCheckAuthenticationService extends AuthenticationService
         $authenticateUser = $oauth->validateToken($_GET['login_id'], $this->extConf['clientSecret'], $_GET['code']);
         if ($authenticateUser) {
             return 200;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
