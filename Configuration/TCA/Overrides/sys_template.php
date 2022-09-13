@@ -1,5 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
-defined('TYPO3') || die();
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile('typo3_docchecklogin', 'Configuration/TypoScript', 'typo3-docchecklogin');
+defined('TYPO3') || exit;
+
+ExtensionManagementUtility::addStaticFile('typo3_docchecklogin', 'Configuration/TypoScript', 'typo3-docchecklogin');

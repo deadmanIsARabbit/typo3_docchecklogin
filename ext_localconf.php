@@ -1,21 +1,26 @@
-<?php
+<?php declare(strict_types=1);
 
-defined('TYPO3') or die();
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
+use Antwerpes\Typo3Docchecklogin\Controller\DocCheckAuthenticationController;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use Antwerpes\Typo3Docchecklogin\Service\DocCheckAuthenticationService;
 
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+defined('TYPO3') || exit;
+
+ExtensionUtility::configurePlugin(
     'Typo3Docchecklogin',
     'DocCheckAuthentication',
     [
-        \Antwerpes\Typo3Docchecklogin\Controller\DocCheckAuthenticationController::class => 'main, loggedIn, loginForm',
+        DocCheckAuthenticationController::class => 'main, loggedIn, loginForm',
     ],
     // non-cacheable actions
     [
-        \Antwerpes\Typo3Docchecklogin\Controller\DocCheckAuthenticationController::class => 'main, loggedIn',
+        DocCheckAuthenticationController::class => 'main, loggedIn',
     ]
 );
 
 // wizards
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+ExtensionManagementUtility::addPageTSConfig(
     'mod {
             wizards.newContentElement.wizardItems.plugins {
                 elements {
@@ -34,7 +39,7 @@ defined('TYPO3') or die();
        }'
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+ExtensionManagementUtility::addService(
     // Extension Key
     'typo3_docchecklogin',
     // Service type
@@ -54,6 +59,6 @@ defined('TYPO3') or die();
         'os' => '',
         'exec' => '',
 
-        'className' => \Antwerpes\Typo3Docchecklogin\Service\DocCheckAuthenticationService::class,
+        'className' => DocCheckAuthenticationService::class,
     ]
 );

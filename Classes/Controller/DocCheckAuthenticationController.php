@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Antwerpes\Typo3Docchecklogin\Controller;
 
-/***************************************************************
+/*
  *  Copyright notice
  *
  *  (c) 2013 antwerpes ag <opensource@antwerpes.de>
@@ -29,8 +29,9 @@ namespace Antwerpes\Typo3Docchecklogin\Controller;
  *  THE SOFTWARE.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
+ */
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -40,7 +41,10 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class DocCheckAuthenticationController extends ActionController
 {
-    const SIGNAL_BEFORE_REDIRECT = 'beforeRedirect';
+    /**
+     * @var string
+     */
+    public const SIGNAL_BEFORE_REDIRECT = 'beforeRedirect';
 
     /**
      * Frontend User array, old style.
@@ -49,47 +53,40 @@ class DocCheckAuthenticationController extends ActionController
      */
     protected $feUser;
 
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $this->initializeFeUser();
     }
 
-    protected function initializeFeUser()
-    {
-        if ($GLOBALS['TSFE']->fe_user->user && $GLOBALS['TSFE']->fe_user->user['uid']) {
-            $this->feUser = $GLOBALS['TSFE']->fe_user->user;
-        }
-    }
-
-    public function mainAction()
+    public function mainAction(): ResponseInterface
     {
         // is logged in?
         if ($this->feUser) {
-            $this->forward('loggedIn');
+            return new ForwardResponse('loggedIn');
         } else {
-            // not logged in, do redirect the user
-            $this->forward('loginForm');
+            return new ForwardResponse('loginForm');
         }
+        return $this->htmlResponse();
     }
 
-    public function loggedInAction()
+    public function loggedInAction(): void
     {
         // if the settings tell us to redirect on a successful login, do so now.
-        if ($GLOBALS['ap_docchecklogin_do_redirect'] === true) {
+        if (true === $GLOBALS['ap_docchecklogin_do_redirect']) {
             // reset the do_redirect flag
             $GLOBALS['ap_docchecklogin_do_redirect'] = false;
 
             // a ?redirect_url -Parameter takes precedence
             $redirectToUri = $this->getRedirectUriFromCookie();
             // alternatively, get redirect conf from user or user group config
-            if (!$redirectToUri) {
+            if (! $redirectToUri) {
                 $redirectToUri = $this->getRedirectUriFromFeLogin();
             }
             // aight, so did we find a page id to redirect to?
             if ($redirectToUri) {
                 // this way works better than $this->redirect(), which will always add some bullshit params
-                if (stripos($redirectToUri, '/') === 0) {
-                    $redirectToUri = substr($redirectToUri, 1);
+                if (0 === mb_stripos($redirectToUri, '/')) {
+                    $redirectToUri = mb_substr($redirectToUri, 1);
                 }
 
                 $hookParams = ['redirectToUri' => &$redirectToUri, 'feUser' => &$this->feUser];
@@ -104,13 +101,14 @@ class DocCheckAuthenticationController extends ActionController
     /**
      * Tries to get a redirect configuration (Page ID) for the current user.
      *
-     * @return int|null Page ID
+     * @return null|int Page ID
      */
     public function getUserRedirectPid()
     {
         $redirectToPid = $GLOBALS['TSFE']->fe_user->user['felogin_redirectPid'];
-        if (!$redirectToPid) {
-            return null;
+
+        if (! $redirectToPid) {
+            return;
         }
 
         return $redirectToPid;
@@ -119,7 +117,7 @@ class DocCheckAuthenticationController extends ActionController
     /**
      * Tries to get a redirect configuration (Page ID) for the current user's primary group.
      *
-     * @return int|null Page ID
+     * @return null|int Page ID
      */
     public function getGroupRedirectPid()
     {
@@ -127,34 +125,33 @@ class DocCheckAuthenticationController extends ActionController
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
         $statement = $queryBuilder->select('felogin_redirectPid')
             ->from('fe_groups')
-            ->where('felogin_redirectPid<>\'\' AND uid IN (' . implode(',', $groupData['uid']) . ')')
+            ->where('felogin_redirectPid<>\'\' AND uid IN ('.implode(',', $groupData['uid']).')')
             ->execute();
 
         while ($row = $statement->fetch()) {
             return $row[0];
         }
-
-        return null;
     }
 
-    public function loginFormAction()
+    public function loginFormAction(): ResponseInterface
     {
         // set a redirect cookie, if a redirect_url GET Param is set
         $redirectUrl = $_GET['redirect_url'];
         // set a redirect cookie, if a return_url GET Param is set
-        if (!$redirectUrl) {
+        if (! $redirectUrl) {
             $redirectUrl = $_GET['return_url'];
         }
         // ... or if the redirect-option is chosen in the plugin
-        if (!$redirectUrl && $this->settings['redirect']) {
+        if (! $redirectUrl && $this->settings['redirect']) {
             $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid($this->settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
         }
+
         if ($redirectUrl) {
             // store as cookie and expire in 10 minutes
-            setcookie('ap_docchecklogin_redirect', $redirectUrl, (int)(gmdate('U')) + 600, '/');
+            setcookie('ap_docchecklogin_redirect', $redirectUrl, (int) gmdate('U') + 600, '/');
         } else {
             // delete an older cookie if no longer needed
-            setcookie('ap_docchecklogin_redirect', '', (int)(gmdate('U')) - 3600, '/');
+            setcookie('ap_docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
         }
 
         $loginId = $this->settings['loginId'];
@@ -164,14 +161,15 @@ class DocCheckAuthenticationController extends ActionController
         }
 
         // most settings are injected implicitly, but a custom login template must be checked briefly
-        if ($this->settings['loginLayout'] === 'custom') {
+        if ('custom' === $this->settings['loginLayout']) {
             $templateKey = $this->settings['customLayout'];
         } else {
-            $templateKey = $this->settings['loginLayout'] . '_red';
+            $templateKey = $this->settings['loginLayout'].'_red';
         }
 
         $this->view->assign('loginId', $loginId);
         $this->view->assign('templateKey', $templateKey);
+        return $this->htmlResponse();
     }
 
     public function getRedirectUriFromCookie()
@@ -179,12 +177,10 @@ class DocCheckAuthenticationController extends ActionController
         if (array_key_exists('ap_docchecklogin_redirect', $_COOKIE)) {
             // clear the cookie
             $redirectUri = $_COOKIE['ap_docchecklogin_redirect'];
-            setcookie('ap_docchecklogin_redirect', '', (int)(gmdate('U')) - 3600, '/');
+            setcookie('ap_docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
 
             return $redirectUri;
         }
-
-        return null;
     }
 
     public function getRedirectUriFromFeLogin()
@@ -193,7 +189,7 @@ class DocCheckAuthenticationController extends ActionController
         $redirectToPid = $this->getUserRedirectPid();
         $redirectUri = null;
         // only bother fetching the group redirect config if no user user-level config was found
-        if (!$redirectToPid) {
+        if (! $redirectToPid) {
             $redirectToPid = $this->getGroupRedirectPid();
         }
 
@@ -204,13 +200,20 @@ class DocCheckAuthenticationController extends ActionController
         return $redirectUri;
     }
 
+    protected function initializeFeUser(): void
+    {
+        if ($GLOBALS['TSFE']->fe_user->user && $GLOBALS['TSFE']->fe_user->user['uid']) {
+            $this->feUser = $GLOBALS['TSFE']->fe_user->user;
+        }
+    }
+
     /**
      * Call a specified hook.
      *
      * @param $hookName
      * @param $params
      */
-    protected function callHook($hookName, &$params)
+    protected function callHook($hookName, &$params): void
     {
         // call hook to post-process the fetched user record
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ap_docchecklogin'][$hookName])) {

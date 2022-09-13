@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Antwerpes\Typo3Docchecklogin\Utility;
 
@@ -14,12 +14,14 @@ class OauthUtility
      * Validate The Access Token
      * When no Access Token is found, try to generate a new token
      * When one is found, check if it is still valid
-     * When it is not valid, try to generate a new token
+     * When it is not valid, try to generate a new token.
      *
      * @param $clientId
      * @param $clientSecret
      * @param $code
+     *
      * @return bool
+     *
      * @throws InvalidRequestTokenException
      */
     public function validateToken($clientId, $clientSecret, $code)
@@ -27,7 +29,7 @@ class OauthUtility
         if ($GLOBALS['DC_ACCESS_TOKEN']) {
             $curl = curl_init();
             curl_setopt_array($curl, [
-                CURLOPT_URL => $this->validateTokenUrl . '?access_token=' . $GLOBALS['DC_ACCESS_TOKEN'],
+                CURLOPT_URL => $this->validateTokenUrl.'?access_token='.$GLOBALS['DC_ACCESS_TOKEN'],
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => '',
                 CURLOPT_MAXREDIRS => 10,
@@ -43,28 +45,33 @@ class OauthUtility
             if ($response->boolIsValid) {
                 return true;
             }
+
             return $this->refreshToken($clientId, $clientSecret, $code);
         }
+
         return $this->generateToken($clientId, $clientSecret, $code);
     }
 
     /**
-     * Generate the Access Token with the given Parameters
+     * Generate the Access Token with the given Parameters.
      *
      * @param $clientId
      * @param $clientSecret
      * @param $code
+     *
      * @return bool
+     *
      * @throws InvalidRequestTokenException
      */
     public function generateToken($clientId, $clientSecret, $code)
     {
-        $url = $this->generateTokenUrl . '?client_id=' . $clientId . '&client_secret=' . $clientSecret . '&code=' . $code . '&grant_type=authorization_code';
+        $url = $this->generateTokenUrl.'?client_id='.$clientId.'&client_secret='.$clientSecret.'&code='.$code.'&grant_type=authorization_code';
         $response = $this->createCurl($url);
 
         if ($response->access_token) {
             $GLOBALS['DC_ACCESS_TOKEN'] = $response->access_token;
             $GLOBALS['DC_REFRESH_TOKEN'] = $response->refresh_token;
+
             return true;
         }
         throw new InvalidRequestTokenException(
@@ -74,22 +81,25 @@ class OauthUtility
 
     /**
      * Refresh the Access Token with the given refresh Token
-     * When the Refresh Token is found, try to generate the access token new
+     * When the Refresh Token is found, try to generate the access token new.
      *
      * @param $clientId
      * @param $clientSecret
      * @param $code
+     *
      * @return bool
+     *
      * @throws InvalidRequestTokenException
      */
     public function refreshToken($clientId, $clientSecret, $code)
     {
         if ($GLOBALS['DC_REFRESH_TOKEN']) {
-            $url = $this->generateTokenUrl . '?client_id=' . $clientId . '&client_secret=' . $clientSecret . '&refresh_token=' . $GLOBALS['DC_REFRESH_TOKEN'] . '&grant_type=refresh_token';
+            $url = $this->generateTokenUrl.'?client_id='.$clientId.'&client_secret='.$clientSecret.'&refresh_token='.$GLOBALS['DC_REFRESH_TOKEN'].'&grant_type=refresh_token';
             $response = $this->createCurl($url);
 
             if ($response->access_token) {
                 $GLOBALS['DC_ACCESS_TOKEN'] = $response->access_token;
+
                 return true;
             }
             throw new InvalidRequestTokenException(
@@ -101,15 +111,18 @@ class OauthUtility
     }
 
     /**
-     * Get User Data via the Access Token
+     * Get User Data via the Access Token.
+     *
      * @return mixed
+     *
      * @throws InvalidRequestTokenException
      */
     public function getUserData()
     {
         if ($GLOBALS['DC_ACCESS_TOKEN']) {
-            $url = $this->userDataUrl . '?access_token=' . $GLOBALS['DC_ACCESS_TOKEN'];
+            $url = $this->userDataUrl.'?access_token='.$GLOBALS['DC_ACCESS_TOKEN'];
             $response = $this->createCurl($url);
+
             if ($response->uniquekey) {
                 return $response;
             }
@@ -124,8 +137,10 @@ class OauthUtility
     }
 
     /**
-     * Helper Class to Generate the curl response
+     * Helper Class to Generate the curl response.
+     *
      * @param $url
+     *
      * @return mixed
      */
     public function createCurl($url)
@@ -145,6 +160,7 @@ class OauthUtility
 
         $response = json_decode(curl_exec($curl));
         curl_close($curl);
+
         return $response;
     }
 }

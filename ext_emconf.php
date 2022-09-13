@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'typo3-docchecklogin',
@@ -7,7 +7,6 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Sabrina Zwirner, Michael Paffrath',
     'author_email' => 'sabrina.zwirner@antwerpe.com, michael.paffrath@antwerpes.com',
     'state' => 'alpha',
-    'clearCacheOnLoad' => 0,
     'version' => '1.0.0',
     'constraints' => [
         'depends' => [

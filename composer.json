@@ -2,15 +2,8 @@
     "name": "antwerpes/typo3-docchecklogin",
     "type": "typo3-cms-extension",
     "description": "Integrate DocCheck Login with your Project",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "version": "0.1",
-    "keywords": [
-        "antwerpes",
-        "docchecklogin",
-        "typo3",
-        "typo3-docchecklogin"
-    ],
+    "keywords": ["antwerpes", "docchecklogin", "typo3", "typo3-docchecklogin"],
     "homepage": "https://github.com/antwerpes/typo3_docchecklogin",
     "authors": [
         {
@@ -55,9 +48,10 @@
     },
     "extra": {
         "typo3/cms": {
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/public",
             "extension-key": "typo3_docchecklogin"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
