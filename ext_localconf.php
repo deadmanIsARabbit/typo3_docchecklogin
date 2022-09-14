@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 use Antwerpes\Typo3Docchecklogin\Controller\DocCheckAuthenticationController;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use Antwerpes\Typo3Docchecklogin\Service\DocCheckAuthenticationService;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') || exit;
 

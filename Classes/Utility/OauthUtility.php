@@ -3,7 +3,6 @@
 namespace Antwerpes\Typo3Docchecklogin\Utility;
 
 use TYPO3\CMS\Backend\Routing\Exception\InvalidRequestTokenException;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class OauthUtility
 {
@@ -69,13 +68,13 @@ class OauthUtility
         $url = $this->generateTokenUrl.'?client_id='.$clientId.'&client_secret='.$clientSecret.'&code='.$code.'&grant_type=authorization_code';
         $response = $this->createCurl($url);
 
-        if(property_exists($response,'error')){
+        if (property_exists($response, 'error')) {
             throw new InvalidRequestTokenException(
                 'DocCheck Authentication: '.$response->error_description
             );
         }
 
-        if(property_exists($response,'access_token')){
+        if (property_exists($response, 'access_token')) {
             $GLOBALS['DC_ACCESS_TOKEN'] = $response->access_token;
             $GLOBALS['DC_REFRESH_TOKEN'] = $response->refresh_token;
 

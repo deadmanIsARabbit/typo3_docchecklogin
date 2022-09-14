@@ -3,19 +3,19 @@
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 $selectColumns = [
-    'dc_gender' =>[
+    'dc_gender' => [
         'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.male' => 'm',
         'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.female' => 'f',
         'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.company' => 'c',
         'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.other' => 'o',
         'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.unknown' => 'u',
-    ]
+    ],
 ];
 
 $numberColumns = [
     'dc_profession',
     'dc_profession_parent',
-    'dc_discipline'
+    'dc_discipline',
 ];
 
 foreach ($numberColumns as $column) {
@@ -39,11 +39,10 @@ foreach ($selectColumns as $columnKey => $column) {
         ],
     ];
 
-    foreach($column as $key => $value){
-        $tempColumns[$columnKey]['config']['items'][]= [$key,$value];
+    foreach ($column as $key => $value) {
+        $tempColumns[$columnKey]['config']['items'][] = [$key, $value];
     }
 }
-
 
 ExtensionManagementUtility::addTCAcolumns('fe_users', $tempColumns);
 ExtensionManagementUtility::addToAllTCAtypes(

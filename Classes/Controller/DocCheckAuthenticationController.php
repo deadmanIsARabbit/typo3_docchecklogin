@@ -30,33 +30,34 @@ namespace Antwerpes\Typo3Docchecklogin\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
-
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Plugin 'DocCheck Authentication' for the 'typo3_docchecklogin' extension.
  */
 class DocCheckAuthenticationController extends ActionController
 {
-
     protected $extConf = [];
 
-    public function initializeAction()
+    protected function initializeAction(): void
     {
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get('typo3_docchecklogin');
     }
 
     /**
-     * Main show Action
-     * @return ResponseInterface
-     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     * Main show Action.
+     *
+     * @throws AspectNotFoundException
      */
     public function showAction(): ResponseInterface
     {
@@ -71,32 +72,31 @@ class DocCheckAuthenticationController extends ActionController
         }
 
         $this->view->assignMultiple([
-            'loggedIn' => $loggedIn
+            'loggedIn' => $loggedIn,
         ]);
 
         return $this->htmlResponse();
     }
 
     /**
-     * @return void
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     * @throws DBALException
+     * @throws Exception
+     * @throws StopActionException
      */
     public function loggedIn(): void
     {
-        $redirectToUri = $this->getRedirectUriFromCookie() ? $this->getRedirectUriFromCookie() : $this->getRedirectUriFromFeLogin();
+        $redirectToUri = $this->getRedirectUriFromCookie() ?: $this->getRedirectUriFromFeLogin();
 
         if ($redirectToUri) {
-
-            //Hook To overwrite the redirect
-            if(is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'])){
+            // Hook To overwrite the redirect
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'])) {
                 $_params = [
                     'redirectToUri' => &$redirectToUri,
-                    'pObj' => &$this
+                    'pObj' => &$this,
                 ];
-                foreach($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'] as $_funcRef) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($_funcRef,$_params, $this);
+
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'] as $_funcRef) {
+                    GeneralUtility::callUserFunction($_funcRef, $_params, $this);
                 }
             }
 
@@ -106,27 +106,26 @@ class DocCheckAuthenticationController extends ActionController
 
     /**
      * @param $getParameter
-     * @return void
      */
-    public function loggedOut($getParameter)
+    public function loggedOut($getParameter): void
     {
         $settings = $this->settings;
-        $redirectUrl = array_key_exists('redirect_url', $getParameter) ? $getParameter['redirect_url'] : null;
+        $redirectUrl = $getParameter['redirect_url'] ?? null;
         // ... or if the redirect-option is chosen in the plugin
-        if (!$redirectUrl && array_key_exists('redirect', $settings)) {
-            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid(intval($settings['redirect']))->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
+        if (! $redirectUrl && array_key_exists('redirect', $settings)) {
+            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int) ($settings['redirect']))->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
         }
 
         if ($redirectUrl) {
             // store as cookie and expire in 10 minutes
-            setcookie('docchecklogin_redirect', $redirectUrl, (int)gmdate('U') + 600, '/');
+            setcookie('docchecklogin_redirect', $redirectUrl, (int) gmdate('U') + 600, '/');
         } else {
             // delete an older cookie if no longer needed
-            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
         }
 
         if (array_key_exists('loginId', $settings)) {
-            $loginId = $settings['loginId'] ? $settings['loginId'] : $settings['loginOverrideId'];
+            $loginId = $settings['loginId'] ?: $settings['loginOverrideId'];
         } else {
             $loginId = $settings['loginOverrideId'];
         }
@@ -135,36 +134,36 @@ class DocCheckAuthenticationController extends ActionController
         if ('custom' === $this->settings['loginLayout']) {
             $templateKey = $this->settings['customLayout'];
         } else {
-            $templateKey = $this->settings['loginLayout'] . '_red';
+            $templateKey = $this->settings['loginLayout'].'_red';
         }
 
         $this->view->assignMultiple([
             'loginId' => $loginId,
-            'templateKey' => $templateKey
+            'templateKey' => $templateKey,
         ]);
     }
 
     /**
-     * Get Redirect URL form the "docchecklogin_redirect" Cookie
-     * @return mixed|null
+     * Get Redirect URL form the "docchecklogin_redirect" Cookie.
+     *
+     * @return null|mixed
      */
     public function getRedirectUriFromCookie()
     {
         if (array_key_exists('docchecklogin_redirect', $_COOKIE)) {
             // clear the cookie
             $redirectUri = $_COOKIE['docchecklogin_redirect'];
-            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
 
             return $redirectUri;
         }
-
-        return null;
     }
 
     /**
-     * @return string|null
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @return null|string
+     *
+     * @throws DBALException
+     * @throws Exception
      */
     public function getRedirectUriFromFeLogin()
     {
@@ -174,8 +173,8 @@ class DocCheckAuthenticationController extends ActionController
         $redirectToPid = $user['felogin_redirectPid'];
         $redirectUri = null;
         // only bother fetching the group redirect config if no user user-level config was found
-        if (!$redirectToPid) {
-            //Take only the first group for redirect
+        if (! $redirectToPid) {
+            // Take only the first group for redirect
             $firstUserGroup = explode(',', $user['usergroup'])[0];
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
@@ -196,5 +195,4 @@ class DocCheckAuthenticationController extends ActionController
 
         return $redirectUri;
     }
-
 }

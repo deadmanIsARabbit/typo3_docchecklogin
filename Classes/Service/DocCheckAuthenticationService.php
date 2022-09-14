@@ -2,14 +2,13 @@
 
 namespace Antwerpes\Typo3Docchecklogin\Service;
 
+use Doctrine\DBAL\DBALException;
 use Antwerpes\Typo3Docchecklogin\Utility\OauthUtility;
-use Ap\Provider\Preview\DefaultPreviewRenderer;
 use Exception;
 use TYPO3\CMS\Core\Authentication\AuthenticationService;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class DocCheckAuthenticationService extends AuthenticationService
 {
@@ -21,10 +20,10 @@ class DocCheckAuthenticationService extends AuthenticationService
             ->get('typo3_docchecklogin');
     }
 
-    public function initAuth($mode, $loginData, $authInfo, $pObj)
+    public function initAuth($mode, $loginData, $authInfo, $pObj): void
     {
         $authInfo['db_user']['checkPidList'] = $this->extConf['dummyUserPid'];
-        $authInfo['db_user']['check_pid_clause'] = ' AND pid = ' . $authInfo['db_user']['checkPidList'] . ' ';
+        $authInfo['db_user']['check_pid_clause'] = ' AND pid = '.$authInfo['db_user']['checkPidList'].' ';
         parent::initAuth($mode, $loginData, $authInfo, $pObj);
     }
 
@@ -47,13 +46,13 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     public function getUser()
     {
-        $dcVal = array_key_exists('dc', $_GET) ? $_GET['dc'] : null;
-        $dcCode = array_key_exists('code', $_GET) ? $_GET['code'] : null;
-        $dcLoginId = array_key_exists('login_id', $_GET) ? $_GET['login_id'] : null;;
-        $dcClientSecret = array_key_exists('clientSecret', $this->extConf) ? $this->extConf['clientSecret'] : null;;
+        $dcVal = $_GET['dc'] ?? null;
+        $dcCode = $_GET['code'] ?? null;
+        $dcLoginId = $_GET['login_id'] ?? null;
+        $dcClientSecret = $this->extConf['clientSecret'] ?? null;
 
         // if no dc param is given - let's not even bother getting the dummy user
-        if (!$dcVal) {
+        if (! $dcVal) {
             return false;
         }
 
@@ -83,10 +82,9 @@ class DocCheckAuthenticationService extends AuthenticationService
         // false - this service was the right one to authenticate the user but it failed
         // true - this service was able to authenticate the user
 
-        $dcVal = array_key_exists('dc', $_GET) ? $_GET['dc'] : null;
-        $dcCode = array_key_exists('code', $_GET) ? $_GET['code'] : null;
-        $dcClientSecret = array_key_exists('clientSecret', $this->extConf) ? $this->extConf['clientSecret'] : null;;
-
+        $dcVal = $_GET['dc'] ?? null;
+        $dcCode = $_GET['code'] ?? null;
+        $dcClientSecret = $this->extConf['clientSecret'] ?? null;
 
         // Check if needed Parameter for oauth are given
         // Else try to auth the Dummyuser
@@ -115,14 +113,15 @@ class DocCheckAuthenticationService extends AuthenticationService
     {
         $oauth = new OauthUtility();
         $authenticateUser = $oauth->validateToken($dcLoginId, $dcClientSecret, $dcCode);
-        if (!$authenticateUser) {
+
+        if (! $authenticateUser) {
             throw new Exception('DocCheck Authentication: User coudnt get authenticated.');
         }
 
         $userData = $oauth->getUserData();
         $uniqKey = $userData->uniquekey;
 
-        if (!$this->isValidMd5($uniqKey)) {
+        if (! $this->isValidMd5($uniqKey)) {
             throw new Exception('DocCheck Authentication: Unique key is not valid.');
         }
         $group = $this->getUniqueUserGroupId($dcVal);
@@ -131,15 +130,15 @@ class DocCheckAuthenticationService extends AuthenticationService
         $username = 'dc_'.$uniqKey;
         $userObject = $this->fetchUserRecord($username);
 
-        if (!$userObject) {
+        if (! $userObject) {
             // else: we dont have a record for this user yet
             $userObject = $this->createUserRecord($username, $group, $this->extConf['dummyUserPid']);
         }
 
         // Double Check if we have now a user
         if ($userObject) {
-            //if the group changed update it
-            if($userObject['usergroup'] != $group){
+            // if the group changed update it
+            if ($userObject['usergroup'] !== $group) {
                 $userObject = $this->updateGroupId($userObject, $group);
             }
             // cool, now in case we have Personal enabled, save the personal data in the database.
@@ -157,8 +156,10 @@ class DocCheckAuthenticationService extends AuthenticationService
      * @param $username
      * @param $group
      * @param $pid
+     *
      * @return false|mixed
-     * @throws \Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
     protected function createUserRecord($username, $group, $pid)
     {
@@ -183,7 +184,8 @@ class DocCheckAuthenticationService extends AuthenticationService
         return $this->fetchUserRecord($username);
     }
 
-    protected function updateGroupId($userObject, $group){
+    protected function updateGroupId($userObject, $group)
+    {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->db_user['table']);
         $queryBuilder
             ->update($this->db_user['table'])
@@ -198,17 +200,20 @@ class DocCheckAuthenticationService extends AuthenticationService
 
     /**
      *  If DocCheck Personal parameters are detected, add them to the user object.
+     *
      * @param $user
      * @param $userData
+     *
      * @return mixed
-     * @throws \Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      */
     protected function augmentDcPersonal($user, $userData)
     {
-        //If there was an error while recieving the userData
-        //1. When the user revoked the agreement to send his data
-        //2. When you don't have the business licence
-        if(property_exists($userData,'error')){
+        // If there was an error while recieving the userData
+        // 1. When the user revoked the agreement to send his data
+        // 2. When you don't have the business licence
+        if (property_exists($userData, 'error')) {
             return $user;
         }
         $paramMapping = [
@@ -269,19 +274,20 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function getUniqueUserGroupId($dcVal)
     {
-        $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], intval($this->extConf['dummyUserPid']));
+        $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) ($this->extConf['dummyUserPid']));
 
         // is routing enabled?
         if ($this->extConf['routingEnable']) {
             $grp = $this->getRoutedGroupId($dcVal);
-            if ($grp === null) {
-                $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], intval($this->extConf['dummyUserPid']));
+
+            if (null === $grp) {
+                $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) ($this->extConf['dummyUserPid']));
             }
         }
 
-        if (!$grp) {
+        if (! $grp) {
             // whoops, no group found
-            throw new Exception('DocCheck Authentication: Could not find front end user group ' . $grp);
+            throw new Exception('DocCheck Authentication: Could not find front end user group '.$grp);
         }
 
         return $grp;
@@ -289,10 +295,13 @@ class DocCheckAuthenticationService extends AuthenticationService
 
     /**
      * Fetch the dummy usergroup for the given username, on a specific PID.
+     *
      * @param $username
      * @param $pid
+     *
      * @return false|mixed
-     * @throws \Doctrine\DBAL\DBALException
+     *
+     * @throws DBALException
      * @throws \Doctrine\DBAL\Driver\Exception
      */
     protected function fetchDummyUserGroup($username, $pid)
@@ -307,9 +316,10 @@ class DocCheckAuthenticationService extends AuthenticationService
             )
             ->executeQuery()->fetchAssociative();
 
-        if ($result != '') {
+        if ('' !== $result) {
             return $result['usergroup'];
         }
+
         return false;
     }
 
@@ -317,7 +327,8 @@ class DocCheckAuthenticationService extends AuthenticationService
      * Read the routing map and find a suitable group id for this user.
      *
      * @param $dcVal
-     * @return int|null ID of the associated group, or null if none found
+     *
+     * @return null|int ID of the associated group, or null if none found
      */
     protected function getRoutedGroupId($dcVal)
     {
@@ -329,19 +340,16 @@ class DocCheckAuthenticationService extends AuthenticationService
             [$grp, $dcParam] = explode('=', $routeItem);
 
             if ($dcParam === $dcVal) {
-                return intval($grp);
+                return (int) $grp;
             }
         }
-
-        return null;
     }
 
     protected function isValidMd5($md5)
     {
-        return !empty($md5) && preg_match('/^[a-f0-9]{32}$/', $md5);
+        return ! empty($md5) && preg_match('/^[a-f0-9]{32}$/', $md5);
     }
 
-//
     /**
      * Check whether
      * ... the given user is the dummy user
@@ -355,7 +363,7 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function authDummyUser($user, $dcVal)
     {
-        if (!$this->isDummyUser($user)) {
+        if (! $this->isDummyUser($user)) {
             // oops, not the dummy user. Try other auth methods.
             return 100;
         }
@@ -377,10 +385,10 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function authUniqueUser($user, $dcVal)
     {
-        $dcLoginId = array_key_exists('login_id', $_GET) ? $_GET['login_id'] : null;
-        $dcCode = array_key_exists('code', $_GET) ? $_GET['code'] : null;
+        $dcLoginId = $_GET['login_id'] ?? null;
+        $dcCode = $_GET['code'] ?? null;
 
-        if (!$this->isUniqueUser($user)) {
+        if (! $this->isUniqueUser($user)) {
             // not a unique user, try other auth methods.
             return 100;
         }
@@ -388,7 +396,7 @@ class DocCheckAuthenticationService extends AuthenticationService
         $expectedGroupId = $this->getUniqueUserGroupId($dcVal);
         $actualGroupId = $user['usergroup'];
         // the given dcval does not match any configured group id
-        if (!$actualGroupId) {
+        if (! $actualGroupId) {
             return false;
         }
 
@@ -459,14 +467,14 @@ class DocCheckAuthenticationService extends AuthenticationService
     {
         $dummyUserName = $this->extConf['dummyUser'];
 
-        if (!$dummyUserName) {
+        if (! $dummyUserName) {
             throw new Exception('DocCheck Authentication: No Dummy User specified in Extension settings');
         }
 
         $user = $this->fetchUserRecord($dummyUserName);
 
-        if (!$user) {
-            throw new Exception('DocCheck Authentication: Dummy User "' . $dummyUserName . '" was not found on the Page with the ID "' . $this->extConf['dummyUserPid'] . '"');
+        if (! $user) {
+            throw new Exception('DocCheck Authentication: Dummy User "'.$dummyUserName.'" was not found on the Page with the ID "'.$this->extConf['dummyUserPid'].'"');
         }
 
         return $user;
