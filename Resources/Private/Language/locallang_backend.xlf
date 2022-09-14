@@ -63,6 +63,33 @@
 			<trans-unit id="flexform.redirect" resname="flexform.redirect">
 				<source>Redirect after Login (will be overridden by ?redirect_url)</source>
 			</trans-unit>
+            <trans-unit id="user.dc_profession" resname="user.dc_profession">
+                <source>Profession</source>
+            </trans-unit>
+            <trans-unit id="user.dc_discipline" resname="user.dc_discipline">
+                <source>Discipline</source>
+            </trans-unit>
+            <trans-unit id="user.dc_gender" resname="user.dc_gender">
+                <source>Gender</source>
+            </trans-unit>
+            <trans-unit id="user.tabs.dochecklogin" resname="user.tabs.dochecklogin">
+                <source>Doccheck Login</source>
+            </trans-unit>
+            <trans-unit id="user.dc_gender.male" resname="user.dc_gender.male">
+                <source>Male</source>
+            </trans-unit>
+            <trans-unit id="user.dc_gender.female" resname="user.dc_gender.female">
+                <source>Female</source>
+            </trans-unit>
+            <trans-unit id="user.dc_gender.company" resname="user.dc_gender.company">
+                <source>Company</source>
+            </trans-unit>
+            <trans-unit id="user.dc_gender.other" resname="user.dc_gender.other">
+                <source>Other</source>
+            </trans-unit>
+            <trans-unit id="user.dc_gender.unknown" resname="user.dc_gender.unknown">
+                <source>Unknown</source>
+            </trans-unit>
 		</body>
 	</file>
 </xliff>

@@ -3,6 +3,7 @@
 namespace Antwerpes\Typo3Docchecklogin\Utility;
 
 use TYPO3\CMS\Backend\Routing\Exception\InvalidRequestTokenException;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class OauthUtility
 {
@@ -26,7 +27,7 @@ class OauthUtility
      */
     public function validateToken($clientId, $clientSecret, $code)
     {
-        if ($GLOBALS['DC_ACCESS_TOKEN']) {
+        if (array_key_exists('DC_ACCESS_TOKEN', $GLOBALS)) {
             $curl = curl_init();
             curl_setopt_array($curl, [
                 CURLOPT_URL => $this->validateTokenUrl.'?access_token='.$GLOBALS['DC_ACCESS_TOKEN'],
@@ -68,12 +69,19 @@ class OauthUtility
         $url = $this->generateTokenUrl.'?client_id='.$clientId.'&client_secret='.$clientSecret.'&code='.$code.'&grant_type=authorization_code';
         $response = $this->createCurl($url);
 
-        if ($response->access_token) {
+        if(property_exists($response,'error')){
+            throw new InvalidRequestTokenException(
+                'DocCheck Authentication: '.$response->error_description
+            );
+        }
+
+        if(property_exists($response,'access_token')){
             $GLOBALS['DC_ACCESS_TOKEN'] = $response->access_token;
             $GLOBALS['DC_REFRESH_TOKEN'] = $response->refresh_token;
 
             return true;
         }
+
         throw new InvalidRequestTokenException(
             'DocCheck Authentication: There was a Problem in receiving the access token'
         );
@@ -93,7 +101,7 @@ class OauthUtility
      */
     public function refreshToken($clientId, $clientSecret, $code)
     {
-        if ($GLOBALS['DC_REFRESH_TOKEN']) {
+        if (array_key_exists('DC_REFRESH_TOKEN', $GLOBALS)) {
             $url = $this->generateTokenUrl.'?client_id='.$clientId.'&client_secret='.$clientSecret.'&refresh_token='.$GLOBALS['DC_REFRESH_TOKEN'].'&grant_type=refresh_token';
             $response = $this->createCurl($url);
 
@@ -119,7 +127,7 @@ class OauthUtility
      */
     public function getUserData()
     {
-        if ($GLOBALS['DC_ACCESS_TOKEN']) {
+        if (array_key_exists('DC_ACCESS_TOKEN', $GLOBALS)) {
             $url = $this->userDataUrl.'?access_token='.$GLOBALS['DC_ACCESS_TOKEN'];
             $response = $this->createCurl($url);
 

@@ -13,6 +13,11 @@ plugin.tx_typo3docchecklogin {
             1 = {$plugin.tx_typo3docchecklogin.view.templateRootPath}
         }
     }
+
+    settings{
+        //This numeric parameter overrides the used Doccheck Login ID. Especially useful for working in multiple environments.
+        loginOverrideId = 2000000018721
+    }
 }
 
 plugin.tx_typo3docchecklogin_doccheckauthentication < plugin.tx_typo3docchecklogin

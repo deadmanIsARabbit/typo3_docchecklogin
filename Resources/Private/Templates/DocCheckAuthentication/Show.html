@@ -1,0 +1,9 @@
+<f:if condition="{loggedIn}">
+    <f:then>
+       <f:render partial="LoggedIn"/>
+    </f:then>
+    <f:else>
+        <f:render partial="LoggedOut" arguments="{_all}"/>
+    </f:else>
+</f:if>
+

@@ -11,11 +11,11 @@ ExtensionUtility::configurePlugin(
     'Typo3Docchecklogin',
     'DocCheckAuthentication',
     [
-        DocCheckAuthenticationController::class => 'main, loggedIn, loginForm',
+        DocCheckAuthenticationController::class => 'show',
     ],
     // non-cacheable actions
     [
-        DocCheckAuthenticationController::class => 'main, loggedIn',
+        DocCheckAuthenticationController::class => 'show',
     ]
 );
 
@@ -45,16 +45,16 @@ ExtensionManagementUtility::addService(
     // Service type
     'auth',
     // Service key
-    'docchecklogin',
+    'Antwerpes\\Typo3Docchecklogin\\Service\\DocCheckAuthenticationService',
     [
         'title' => 'DocCheck Authentication Service',
         'description' => 'Authenticates users through the DocCheck Authentication Service',
 
-        'subtype' => '',
+        'subtype' => 'getUserFE,authUserFE',
 
         'available' => true,
         'priority' => 60,
-        'quality' => 80,
+        'quality' => 60,
 
         'os' => '',
         'exec' => '',

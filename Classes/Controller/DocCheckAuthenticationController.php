@@ -30,167 +30,164 @@ namespace Antwerpes\Typo3Docchecklogin\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
+
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Plugin 'DocCheck Authentication' for the 'typo3_docchecklogin' extension.
  */
 class DocCheckAuthenticationController extends ActionController
 {
-    /**
-     * @var string
-     */
-    public const SIGNAL_BEFORE_REDIRECT = 'beforeRedirect';
 
-    /**
-     * Frontend User array, old style.
-     *
-     * @var array
-     */
-    protected $feUser;
+    protected $extConf = [];
 
-    public function initializeObject(): void
+    public function initializeAction()
     {
-        $this->initializeFeUser();
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)
+            ->get('typo3_docchecklogin');
     }
 
-    public function mainAction(): ResponseInterface
+    /**
+     * Main show Action
+     * @return ResponseInterface
+     * @throws \TYPO3\CMS\Core\Context\Exception\AspectNotFoundException
+     */
+    public function showAction(): ResponseInterface
     {
+        $context = GeneralUtility::makeInstance(Context::class);
+        $getParameter = $_GET;
+        $loggedIn = $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
         // is logged in?
-        if ($this->feUser) {
-            return new ForwardResponse('loggedIn');
+        if ($loggedIn) {
+            $this->loggedIn();
         } else {
-            return new ForwardResponse('loginForm');
+            $this->loggedOut($getParameter);
         }
+
+        $this->view->assignMultiple([
+            'loggedIn' => $loggedIn
+        ]);
+
         return $this->htmlResponse();
     }
 
-    public function loggedInAction(): void
+    /**
+     * @return void
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     */
+    public function loggedIn(): void
     {
-        // if the settings tell us to redirect on a successful login, do so now.
-        if (true === $GLOBALS['ap_docchecklogin_do_redirect']) {
-            // reset the do_redirect flag
-            $GLOBALS['ap_docchecklogin_do_redirect'] = false;
+        $redirectToUri = $this->getRedirectUriFromCookie() ? $this->getRedirectUriFromCookie() : $this->getRedirectUriFromFeLogin();
 
-            // a ?redirect_url -Parameter takes precedence
-            $redirectToUri = $this->getRedirectUriFromCookie();
-            // alternatively, get redirect conf from user or user group config
-            if (! $redirectToUri) {
-                $redirectToUri = $this->getRedirectUriFromFeLogin();
-            }
-            // aight, so did we find a page id to redirect to?
-            if ($redirectToUri) {
-                // this way works better than $this->redirect(), which will always add some bullshit params
-                if (0 === mb_stripos($redirectToUri, '/')) {
-                    $redirectToUri = mb_substr($redirectToUri, 1);
+        if ($redirectToUri) {
+
+            //Hook To overwrite the redirect
+            if(is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'])){
+                $_params = [
+                    'redirectToUri' => &$redirectToUri,
+                    'pObj' => &$this
+                ];
+                foreach($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'] as $_funcRef) {
+                    \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($_funcRef,$_params, $this);
                 }
-
-                $hookParams = ['redirectToUri' => &$redirectToUri, 'feUser' => &$this->feUser];
-                $this->callHook(self::SIGNAL_BEFORE_REDIRECT, $hookParams);
-                $this->redirectToUri($redirectToUri);
             }
 
-            return;
+            $this->redirectToUri($redirectToUri);
         }
     }
 
     /**
-     * Tries to get a redirect configuration (Page ID) for the current user.
-     *
-     * @return null|int Page ID
+     * @param $getParameter
+     * @return void
      */
-    public function getUserRedirectPid()
+    public function loggedOut($getParameter)
     {
-        $redirectToPid = $GLOBALS['TSFE']->fe_user->user['felogin_redirectPid'];
-
-        if (! $redirectToPid) {
-            return;
-        }
-
-        return $redirectToPid;
-    }
-
-    /**
-     * Tries to get a redirect configuration (Page ID) for the current user's primary group.
-     *
-     * @return null|int Page ID
-     */
-    public function getGroupRedirectPid()
-    {
-        $groupData = $GLOBALS['TSFE']->fe_user->groupData;
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
-        $statement = $queryBuilder->select('felogin_redirectPid')
-            ->from('fe_groups')
-            ->where('felogin_redirectPid<>\'\' AND uid IN ('.implode(',', $groupData['uid']).')')
-            ->execute();
-
-        while ($row = $statement->fetch()) {
-            return $row[0];
-        }
-    }
-
-    public function loginFormAction(): ResponseInterface
-    {
-        // set a redirect cookie, if a redirect_url GET Param is set
-        $redirectUrl = $_GET['redirect_url'];
-        // set a redirect cookie, if a return_url GET Param is set
-        if (! $redirectUrl) {
-            $redirectUrl = $_GET['return_url'];
-        }
+        $settings = $this->settings;
+        $redirectUrl = array_key_exists('redirect_url', $getParameter) ? $getParameter['redirect_url'] : null;
         // ... or if the redirect-option is chosen in the plugin
-        if (! $redirectUrl && $this->settings['redirect']) {
-            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid($this->settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
+        if (!$redirectUrl && array_key_exists('redirect', $settings)) {
+            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid(intval($settings['redirect']))->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
         }
 
         if ($redirectUrl) {
             // store as cookie and expire in 10 minutes
-            setcookie('ap_docchecklogin_redirect', $redirectUrl, (int) gmdate('U') + 600, '/');
+            setcookie('docchecklogin_redirect', $redirectUrl, (int)gmdate('U') + 600, '/');
         } else {
             // delete an older cookie if no longer needed
-            setcookie('ap_docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
         }
 
-        $loginId = $this->settings['loginId'];
-        // override given loginId if loginOverrideId is set
-        if (is_numeric($this->settings['loginOverrideId'])) {
-            $loginId = $this->settings['loginOverrideId'];
+        if (array_key_exists('loginId', $settings)) {
+            $loginId = $settings['loginId'] ? $settings['loginId'] : $settings['loginOverrideId'];
+        } else {
+            $loginId = $settings['loginOverrideId'];
         }
 
         // most settings are injected implicitly, but a custom login template must be checked briefly
         if ('custom' === $this->settings['loginLayout']) {
             $templateKey = $this->settings['customLayout'];
         } else {
-            $templateKey = $this->settings['loginLayout'].'_red';
+            $templateKey = $this->settings['loginLayout'] . '_red';
         }
 
-        $this->view->assign('loginId', $loginId);
-        $this->view->assign('templateKey', $templateKey);
-        return $this->htmlResponse();
+        $this->view->assignMultiple([
+            'loginId' => $loginId,
+            'templateKey' => $templateKey
+        ]);
     }
 
+    /**
+     * Get Redirect URL form the "docchecklogin_redirect" Cookie
+     * @return mixed|null
+     */
     public function getRedirectUriFromCookie()
     {
-        if (array_key_exists('ap_docchecklogin_redirect', $_COOKIE)) {
+        if (array_key_exists('docchecklogin_redirect', $_COOKIE)) {
             // clear the cookie
-            $redirectUri = $_COOKIE['ap_docchecklogin_redirect'];
-            setcookie('ap_docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
+            $redirectUri = $_COOKIE['docchecklogin_redirect'];
+            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
 
             return $redirectUri;
         }
+
+        return null;
     }
 
+    /**
+     * @return string|null
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
     public function getRedirectUriFromFeLogin()
     {
+        $user = $this->request->getAttribute('frontend.user')->user;
+
         // user configuration takes precedence
-        $redirectToPid = $this->getUserRedirectPid();
+        $redirectToPid = $user['felogin_redirectPid'];
         $redirectUri = null;
         // only bother fetching the group redirect config if no user user-level config was found
-        if (! $redirectToPid) {
-            $redirectToPid = $this->getGroupRedirectPid();
+        if (!$redirectToPid) {
+            //Take only the first group for redirect
+            $firstUserGroup = explode(',', $user['usergroup'])[0];
+
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
+            $statement = $queryBuilder->select('felogin_redirectPid')
+                ->from('fe_groups')
+                ->where(
+                    $queryBuilder->expr()->isNotNull('felogin_redirectPid'),
+                    $queryBuilder->expr()->eq('uid', $firstUserGroup),
+                )
+                ->execute()->fetchAssociative();
+
+            $redirectToPid = $statement['felogin_redirectPid'];
         }
 
         if ($redirectToPid) {
@@ -200,32 +197,4 @@ class DocCheckAuthenticationController extends ActionController
         return $redirectUri;
     }
 
-    protected function initializeFeUser(): void
-    {
-        if ($GLOBALS['TSFE']->fe_user->user && $GLOBALS['TSFE']->fe_user->user['uid']) {
-            $this->feUser = $GLOBALS['TSFE']->fe_user->user;
-        }
-    }
-
-    /**
-     * Call a specified hook.
-     *
-     * @param $hookName
-     * @param $params
-     */
-    protected function callHook($hookName, &$params): void
-    {
-        // call hook to post-process the fetched user record
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ap_docchecklogin'][$hookName])) {
-            $params['pObj'] = $this;
-
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ap_docchecklogin'][$hookName] as $funcRef) {
-                GeneralUtility::callUserFunction($funcRef, $params, $this);
-            }
-        }
-
-        if ($this->signalSlotDispatcher) {
-            $this->signalSlotDispatcher->dispatch(__CLASS__, $hookName, $params);
-        }
-    }
 }
