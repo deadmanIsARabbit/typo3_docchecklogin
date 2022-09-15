@@ -16,7 +16,7 @@ routingEnable = 0
 routingMap =
 # cat=business/enable; type=boolean; label=Add DocCheck Personal data transmitted by DocCheck Personal to the generated user
 dcPersonalEnable = 0
-# cat=crawling/enable; type=int; label=Enabled crawling for DocCheck
+# cat=crawling/enable; type=boolean; label=Enabled crawling for DocCheck
 crawlingEnable = 0
 # cat=crawling/enable; type=string; label=User Name of the dummy user to be used for crawling. Defaults to basic.dummyUser
 crawlingUser =

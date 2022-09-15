@@ -2,8 +2,8 @@
 
 namespace Antwerpes\Typo3Docchecklogin\Service;
 
-use Doctrine\DBAL\DBALException;
 use Antwerpes\Typo3Docchecklogin\Utility\OauthUtility;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use TYPO3\CMS\Core\Authentication\AuthenticationService;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -274,14 +274,14 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function getUniqueUserGroupId($dcVal)
     {
-        $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) ($this->extConf['dummyUserPid']));
+        $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) $this->extConf['dummyUserPid']);
 
         // is routing enabled?
         if ($this->extConf['routingEnable']) {
             $grp = $this->getRoutedGroupId($dcVal);
 
             if (null === $grp) {
-                $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) ($this->extConf['dummyUserPid']));
+                $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) $this->extConf['dummyUserPid']);
             }
         }
 

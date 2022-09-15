@@ -30,16 +30,17 @@ namespace Antwerpes\Typo3Docchecklogin\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\Exception;
-use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 /**
  * Plugin 'DocCheck Authentication' for the 'typo3_docchecklogin' extension.
@@ -47,12 +48,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class DocCheckAuthenticationController extends ActionController
 {
     protected $extConf = [];
-
-    protected function initializeAction(): void
-    {
-        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)
-            ->get('typo3_docchecklogin');
-    }
 
     /**
      * Main show Action.
@@ -64,6 +59,7 @@ class DocCheckAuthenticationController extends ActionController
         $context = GeneralUtility::makeInstance(Context::class);
         $getParameter = $_GET;
         $loggedIn = $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+
         // is logged in?
         if ($loggedIn) {
             $this->loggedIn();
@@ -89,7 +85,7 @@ class DocCheckAuthenticationController extends ActionController
 
         if ($redirectToUri) {
             // Hook To overwrite the redirect
-            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin']['beforeRedirect'])) {
+            if (array_key_exists('typo3_docchecklogin', $GLOBALS['TYPO3_CONF_VARS']['EXT']) && array_key_exists('beforeRedirect', $GLOBALS['TYPO3_CONF_VARS']['EXT']['typo3_docchecklogin'])) {
                 $_params = [
                     'redirectToUri' => &$redirectToUri,
                     'pObj' => &$this,
@@ -113,7 +109,7 @@ class DocCheckAuthenticationController extends ActionController
         $redirectUrl = $getParameter['redirect_url'] ?? null;
         // ... or if the redirect-option is chosen in the plugin
         if (! $redirectUrl && array_key_exists('redirect', $settings)) {
-            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int) ($settings['redirect']))->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
+            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int) $settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
         }
 
         if ($redirectUrl) {
@@ -172,8 +168,9 @@ class DocCheckAuthenticationController extends ActionController
         // user configuration takes precedence
         $redirectToPid = $user['felogin_redirectPid'];
         $redirectUri = null;
+
         // only bother fetching the group redirect config if no user user-level config was found
-        if (! $redirectToPid) {
+        if ('' !== $redirectToPid) {
             // Take only the first group for redirect
             $firstUserGroup = explode(',', $user['usergroup'])[0];
 
@@ -185,7 +182,6 @@ class DocCheckAuthenticationController extends ActionController
                     $queryBuilder->expr()->eq('uid', $firstUserGroup),
                 )
                 ->execute()->fetchAssociative();
-
             $redirectToPid = $statement['felogin_redirectPid'];
         }
 
@@ -194,5 +190,11 @@ class DocCheckAuthenticationController extends ActionController
         }
 
         return $redirectUri;
+    }
+
+    protected function initializeAction(): void
+    {
+        $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)
+            ->get('typo3_docchecklogin');
     }
 }
