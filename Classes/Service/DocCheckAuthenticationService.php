@@ -28,16 +28,6 @@ class DocCheckAuthenticationService extends AuthenticationService
     }
 
     /**
-     * Bypass login for crawling.
-     *
-     * @throws Exception
-     */
-    public function bypassLoginForCrawling(): void
-    {
-        // TODO:create Crawler Bypass
-    }
-
-    /**
      * Retrieve the Dummy User whenever we come from the DocCheck Service.
      *
      * @return mixed Array of all users matching current IP
