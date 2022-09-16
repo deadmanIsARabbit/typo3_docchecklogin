@@ -108,16 +108,16 @@ class DocCheckAuthenticationController extends ActionController
         $settings = $this->settings;
         $redirectUrl = $getParameter['redirect_url'] ?? null;
         // ... or if the redirect-option is chosen in the plugin
-        if (! $redirectUrl && array_key_exists('redirect', $settings)) {
-            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int) $settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
+        if (!$redirectUrl && array_key_exists('redirect', $settings)) {
+            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int)$settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
         }
 
         if ($redirectUrl) {
             // store as cookie and expire in 10 minutes
-            setcookie('docchecklogin_redirect', $redirectUrl, (int) gmdate('U') + 600, '/');
+            setcookie('docchecklogin_redirect', $redirectUrl, (int)gmdate('U') + 600, '/');
         } else {
             // delete an older cookie if no longer needed
-            setcookie('docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
         }
 
         if (array_key_exists('loginId', $settings)) {
@@ -130,7 +130,7 @@ class DocCheckAuthenticationController extends ActionController
         if ('custom' === $this->settings['loginLayout']) {
             $templateKey = $this->settings['customLayout'];
         } else {
-            $templateKey = $this->settings['loginLayout'].'_red';
+            $templateKey = $this->settings['loginLayout'] . '_red';
         }
 
         $this->view->assignMultiple([
@@ -149,7 +149,7 @@ class DocCheckAuthenticationController extends ActionController
         if (array_key_exists('docchecklogin_redirect', $_COOKIE)) {
             // clear the cookie
             $redirectUri = $_COOKIE['docchecklogin_redirect'];
-            setcookie('docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
 
             return $redirectUri;
         }

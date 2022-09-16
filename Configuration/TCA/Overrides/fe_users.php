@@ -3,19 +3,19 @@
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 $selectColumns = [
-    'dc_gender' => [
-        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.male' => 'm',
-        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.female' => 'f',
-        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.company' => 'c',
-        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.other' => 'o',
-        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.dc_gender.unknown' => 'u',
+    'tx_typo3docchecklogin_gender' => [
+        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tx_typo3docchecklogin_gender.male' => 'm',
+        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tx_typo3docchecklogin_gender.female' => 'f',
+        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tx_typo3docchecklogin_gender.company' => 'c',
+        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tx_typo3docchecklogin_gender.other' => 'o',
+        'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tx_typo3docchecklogin_gender.unknown' => 'u',
     ],
 ];
 
 $numberColumns = [
-    'dc_profession',
-    'dc_profession_parent',
-    'dc_discipline',
+    'tx_typo3docchecklogin_profession',
+    'tx_typo3docchecklogin_profession_parent',
+    'tx_typo3docchecklogin_discipline',
 ];
 
 foreach ($numberColumns as $column) {
@@ -47,7 +47,7 @@ foreach ($selectColumns as $columnKey => $column) {
 ExtensionManagementUtility::addTCAcolumns('fe_users', $tempColumns);
 ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
-    '--div--;LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tabs.dochecklogin, dc_gender, dc_profession, dc_profession_parent, dc_discipline ',
+    '--div--;LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tabs.dochecklogin, tx_typo3docchecklogin_gender, tx_typo3docchecklogin_profession, tx_typo3docchecklogin_profession_parent, tx_typo3docchecklogin_discipline ',
     '',
     'after:image'
 );

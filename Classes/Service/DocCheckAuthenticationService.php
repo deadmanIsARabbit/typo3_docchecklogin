@@ -213,16 +213,16 @@ class DocCheckAuthenticationService extends AuthenticationService
             'address_name_title' => 'title',
             'address_name_first' => 'first_name',
             'address_name_last' => 'last_name',
-            'address_gender' => 'dc_gender',
+            'address_gender' => 'tx_typo3docchecklogin_gender',
             'address_street' => 'address',
             'address_postal_code' => 'zip',
             'address_city' => 'city',
             'address_country_iso' => 'country',
             'email' => 'email',
             // doccheck profession and discipline: see the official technical documentation at https://crm.doccheck.com/
-            'occupation_profession_id' => 'dc_profession',
-            'occupation_discipline_id' => 'dc_discipline',
-            'occupation_profession_parent_id' => 'dc_profession_parent',
+            'occupation_profession_id' => 'tx_typo3docchecklogin_profession',
+            'occupation_discipline_id' => 'tx_typo3docchecklogin_discipline',
+            'occupation_profession_parent_id' => 'tx_typo3docchecklogin_profession_parent',
         ];
 
         $updateArr = [];

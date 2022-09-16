@@ -6,22 +6,22 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') || exit;
+(function () {
+    ExtensionUtility::configurePlugin(
+        'Typo3Docchecklogin',
+        'DocCheckAuthentication',
+        [
+            DocCheckAuthenticationController::class => 'show',
+        ],
+        // non-cacheable actions
+        [
+            DocCheckAuthenticationController::class => 'show',
+        ]
+    );
 
-ExtensionUtility::configurePlugin(
-    'Typo3Docchecklogin',
-    'DocCheckAuthentication',
-    [
-        DocCheckAuthenticationController::class => 'show',
-    ],
-    // non-cacheable actions
-    [
-        DocCheckAuthenticationController::class => 'show',
-    ]
-);
-
-// wizards
-ExtensionManagementUtility::addPageTSConfig(
-    'mod {
+    // wizards
+    ExtensionManagementUtility::addPageTSConfig(
+        'mod {
             wizards.newContentElement.wizardItems.plugins {
                 elements {
                     doccheckauthentication {
@@ -37,28 +37,30 @@ ExtensionManagementUtility::addPageTSConfig(
                 show = *
             }
        }'
-);
+    );
 
-ExtensionManagementUtility::addService(
+    ExtensionManagementUtility::addService(
     // Extension Key
-    'typo3_docchecklogin',
-    // Service type
-    'auth',
-    // Service key
-    'Antwerpes\\Typo3Docchecklogin\\Service\\DocCheckAuthenticationService',
-    [
-        'title' => 'DocCheck Authentication Service',
-        'description' => 'Authenticates users through the DocCheck Authentication Service',
+        'typo3_docchecklogin',
+        // Service type
+        'auth',
+        // Service key
+        'Antwerpes\\Typo3Docchecklogin\\Service\\DocCheckAuthenticationService',
+        [
+            'title' => 'DocCheck Authentication Service',
+            'description' => 'Authenticates users through the DocCheck Authentication Service',
 
-        'subtype' => 'getUserFE,authUserFE',
+            'subtype' => 'getUserFE,authUserFE',
 
-        'available' => true,
-        'priority' => 60,
-        'quality' => 60,
+            'available' => true,
+            'priority' => 60,
+            'quality' => 60,
 
-        'os' => '',
-        'exec' => '',
+            'os' => '',
+            'exec' => '',
 
-        'className' => DocCheckAuthenticationService::class,
-    ]
-);
+            'className' => DocCheckAuthenticationService::class,
+        ]
+    );
+
+})();
