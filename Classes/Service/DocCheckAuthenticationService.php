@@ -419,12 +419,7 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function isDummyUser($user)
     {
-        // wait, are we supposed to use unique key? then how can this be a dummy user?
-        if ($this->extConf['uniqueKeyEnable']) {
-            return false;
-        }
-
-        return (int) $user['pid'] === (int) $this->extConf['dummyUserPid']
+       return (int) $user['pid'] === (int) $this->extConf['dummyUserPid']
             && $user['username'] === $this->extConf['dummyUser'];
     }
 
