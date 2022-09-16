@@ -7,6 +7,7 @@ use Doctrine\DBAL\DBALException;
 use Exception;
 use TYPO3\CMS\Core\Authentication\AuthenticationService;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -162,7 +163,9 @@ class DocCheckAuthenticationService extends AuthenticationService
         $insertArray['crdate'] = $insertArray['tstamp'] = time();
 
         // add a salted random password
-        $insertArray[$dbUser['userident_column']] = md5(random_int(0, getrandmax()).time().$username.$GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+        $hashInstance = GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('FE');
+        $hashedPassword = $hashInstance->getHashedPassword(random_int(0, getrandmax()).time().$username);
+        $insertArray[$dbUser['userident_column']] = $hashedPassword;
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($dbUser['table']);
         $queryBuilder
