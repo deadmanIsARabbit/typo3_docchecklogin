@@ -30,21 +30,28 @@ Step-by-step instruction
 
 4. Create a Login Page and Include the Login Plugin
 
-   Navigate to the page of your choice, click on the "+Content" Button and Navigate to the Tab "Plugins". Here select the "DocCheck Login" Plugin
+   Navigate to the page of your choice, click on the "+Content" Button and Navigate to the Tab `Plugins`. Here select the `DocCheck Login` Plugin.
 
 5. Edit the Plugin Settings
 
-   Under the Tab "Plugin" set the Login ID for the Plugin to work properly. To set a global Login Id please see :ref:`here <>`
+   Under the Tab "Plugin" set the Login ID for the Plugin to work properly. To set a global Login Id please see :ref:`here <configuration-overwrite-loginid>`
 
 6. Create a User Folder
 
-   In your Page Tree create a user Folder and create a Group and a user.
+   In your Page Tree create a user Folder. Switch to the `List View` and Create a Usergroup and a User inside the newly created Folder. The Names can be free of your choice.
+
+   An Example you can see here:
 
     .. figure:: /Images/user_folder.png
        :class: with-shadow
        :alt: Example User Folder
        :width: 100%
 
-        Example User Folder
+       Example User Folder
 
 7. Edit the Extension Configuration
+
+   For the Plugin to work properly you need to set up the extension configuration accordingly to your Login Licence and your needs.
+   To understand better which settings are usable by your Licence the settings are grouped by so.
+
+   For more detailed information about the extension configuration see :ref:`here <extension-configuration>`.

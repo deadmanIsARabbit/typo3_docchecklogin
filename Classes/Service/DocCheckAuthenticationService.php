@@ -122,7 +122,7 @@ class DocCheckAuthenticationService extends AuthenticationService
         $userObject = $this->fetchUserRecord($username);
 
         if (! $userObject) {
-            // else: we dont have a record for this user yet
+            // else: we don't have a record for this user yet
             $userObject = $this->createUserRecord($username, $group, $this->extConf['dummyUserPid']);
         }
 

@@ -10,8 +10,7 @@ Configuration
    :maxdepth: 5
    :titlesonly:
 
-   General
+   ExtensionConfiguration
    ExtTables
-   TypoScriptReference/Index
-   TSconfig
+   TsConfig
 

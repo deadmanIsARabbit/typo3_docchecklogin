@@ -7,6 +7,7 @@ Introduction
 ============
 
 .. _what-does-it-do:
+
 What does it do?
 ================
 
@@ -20,16 +21,21 @@ This extension integrates the popular DocCheck Login Service with your TYPO3 6.x
 
 
 .. _screenshots:
+
 Screenshots
 ===========
 
 .. _configuration-screen:
-Configuration Screen
-----------
 
-This is the Configuration Screen, reachable from the gear icon in the TYPO3 extension manager.
+Configuration Screen
+---------------------
+
+This are the Extension Configuration Screens that are reachable from the typo3 backend.
+
+For this navigate to `Settings` ➞ `Extension Configuration` ➞ `typo3_docchecklogin`
 
 .. _basic:
+
 Basic
 """"""""""""""
 .. figure:: /Images/settings_basic.png
@@ -40,6 +46,7 @@ Basic
    Configuration Screen: Basic
 
 .. _economy:
+
 Economy
 """"""""""""""
 .. figure:: /Images/settings_economy.png
@@ -50,6 +57,7 @@ Economy
    Configuration Screen: Economy
 
 .. _business:
+
 Business
 """"""""""""""
 .. figure:: /Images/settings_business.png
@@ -60,7 +68,8 @@ Business
    Configuration Screen: Business
 
 .. _crawling:
-Crwaling
+
+Crawling
 """"""""""""""
 .. figure:: /Images/settings_crawling.png
    :class: with-shadow
@@ -70,8 +79,9 @@ Crwaling
    Configuration Screen: Crwaling
 
 .. _plugin-configuration:
+
 Plugin Configuration
-----------
+-------------------------
 The Settings within the plugin flexform
 
 .. figure:: /Images/plugin_settings.png
@@ -82,7 +92,7 @@ The Settings within the plugin flexform
    Configuration Screen: Crwaling
 
 Frontend View
-----------
+-------------------
 Language will vary.
 
 .. figure:: /Images/plugin_frontend.png
