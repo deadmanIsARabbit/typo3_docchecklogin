@@ -2,9 +2,9 @@
 .. index:: BestPractice
 .. _error-handling:
 
-===============
+==================
 403 Error Handling
-===============
+==================
 
 When you have a restriced page and the User is clicking on it the User will normaly comes to a 403 Page that you can define in the
 Typo3 Backend under `Site Management` ➞ `Error Handling`.

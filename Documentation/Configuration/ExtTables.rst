@@ -27,7 +27,10 @@ tx_typo3docchecklogin_profession
 
     Stores the Profession of the User when the Personal-Feature is enabled.
 
-    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en>`__
+    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en&format=json>`__.
+
+    You can change the parameter `language` in the url to get the results for different languages.
+
 
 .. _confval-tx_typo3docchecklogin_profession_parent:
 
@@ -39,7 +42,9 @@ tx_typo3docchecklogin_profession_parent
 
     Stores the Parent Profession of the User when the Personal-Feature is enabled.
 
-    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en>`__
+    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en&format=json>`__.
+
+    You can change the parameter `language` in the url to get the results for different languages.
 
 .. _confval-tx_typo3docchecklogin_discipline:
 
@@ -51,7 +56,9 @@ tx_typo3docchecklogin_discipline
 
     Stores the Discipline of the User when the Personal-Feature is enabled.
 
-    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=discipline&language=en>`__
+    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=discipline&language=en&format=json>`__.
+
+    You can change the parameter `language` in the url to get the results for different languages.
 
 .. _confval-tx_typo3docchecklogin_gender:
 

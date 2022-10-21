@@ -5,9 +5,37 @@
 ============
 Installation
 ============
+..  contents::
+    :local:
+
+.. _before-you-start:
+
+Before you start
+-------------------------
+
+Before you can start to implement the DocCheck Login to your typo3 website, you will need a valid DocCheck Login ID, as well as access to `DocCheck CReaM <http://crm.doccheck.com/com/>`__, the login configuration backend.
+For detailed instructions please read the `technical manual <https://more.doccheck.com/fileadmin/user_upload/files/industry/b2b-landingpage/industry-erste-hilfe-kasten-technical_manual_en.pdf>`__.
+
+Example CReaM settings
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Login URL
+
+..  code-block:: bash
+
+    https://yourwebsite.com/login
+
+Target URL
+
+..  code-block:: bash
+
+    https://yourwebsite.com/login?logintype=login&dc=dcloginparam
+
+
+.. _step-by-step:
 
 Step-by-step instruction
-------------
+-------------------------
 
 .. rst-class:: bignums-important
 

@@ -9,9 +9,13 @@ Extension Configuration
 For the Plugin to work properly you need to set up the extension configuration accordingly to your Login Licence and your needs.
 
 To understand better which settings are usable by your Licence the settings are grouped by so. To know what the different Licences are standing for
-please follow `this Page (only in de) <https://flexikon.doccheck.com/de/DocCheck:DocCheck_Login_f%C3%BCr_Ihre_Website#Unsere_Lizenzen>`__
+please follow `this Page <https://more.doccheck.com/en/industry/login-licenses/>`__.
 
-Each Group is based on the group before. The exception is the Crawling Feature that can be used even when you dont have a licence.
+For the basic functionality, the free DocCheck Basic License should suffice.
+
+If you dont have a Licence yet and are interested in buying one please contact `industry@doccheck.com`. They will also provide you with test licenses if needed.
+
+Each Group in the Extension Configuration is based on the group before. The exception is the Crawling Feature that can be used even when you dont have a licence.
 
 To access the extension configuration navigate in the typo3 backend to `Settings` ➞ `Extension Configuration` ➞ `typo3_DocChecklogin`.
 
@@ -174,7 +178,7 @@ The Crawling-Feature allows an external Crawler to Bypass the DocCheck Login.
 A Crawler is a program that visits your website, loads its content and prepares it for searches.
 This is especially needed when you use your website with the DocCheck Search.
 
-For more information `visit this page <https://crm.DocCheck.com/uploads/assets/other/FS_DC_Industry_Search_Whitepaper_EN.pdf>`__
+For more information `visit this page <https://crm.DocCheck.com/uploads/assets/other/FS_DC_Industry_Search_Whitepaper_EN.pdf>`__.
 
 .. _confval-crawlingEnable:
 
@@ -207,4 +211,4 @@ crawlingIP
     :Required: false
     :type: string
 
-    IP of the Crawler. To Bypass the DocCheck Search Crawler user the IP `195.82.66.150`
+    IP of the Crawler. To Bypass the DocCheck Search Crawler user the IP `195.82.66.150`.

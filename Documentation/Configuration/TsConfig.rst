@@ -6,7 +6,7 @@
 TsConfig
 ==================
 
-This Configuration covers options to configure the plugin
+This Site covers options to configure the plugin.
 
 .. _configuration-custom-template:
 

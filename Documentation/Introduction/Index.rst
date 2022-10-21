@@ -6,12 +6,14 @@
 Introduction
 ============
 
+If you find any errors or have feature requests please contact us on `github <https://github.com/antwerpes/typo3_docchecklogin/issues>`__.
+
 .. _what-does-it-do:
 
 What does it do?
 ================
 
-This extension integrates the popular DocCheck Login Service with your TYPO3 6.x-Website. It is currently maintained by antwerpes ag (a subsidiary of DocCheck AG), in close cooperation with DocCheck.
+This extension integrates the popular DocCheck Login Service with your TYPO3 Website. It is currently maintained by antwerpes ag (a subsidiary of DocCheck AG).
 
 *  It supports the **basic functionality** by logging in a dummy frontend user whenever someone has been authorized by DocCheck.
 *  It supports the **Unique Key feature** (optional, requires license Economy or higher), which allows you to identify returning visitors, by creating one frontend user per unique DocCheck User.
