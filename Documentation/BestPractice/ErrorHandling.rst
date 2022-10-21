@@ -3,19 +3,19 @@
 .. _error-handling:
 
 ==================
-403 Error Handling
+403 error handling
 ==================
 
-When you have a restriced page and the User is clicking on it the User will normaly comes to a 403 Page that you can define in the
-Typo3 Backend under `Site Management` ➞ `Error Handling`.
+When you have a restriced page and the user is clicking on it the user will normaly comes to a 403 page that you can define in the
+TYPO3 backend under :guilabel:`Site Management` ➞ :guilabel:`Error Handling`.
 
-If you want that the User get redirected to the Login Page and after login gets back to the requested Page you can use this Error Handler.
+If you want that the user get redirected to the login page and after login gets back to the requested page you can use this error handler.
 
 .. rst-class:: bignums-important
 
-1.  Create the File `ErrorLoginHandler` in you extension `Classes` Folder
+1.  Create the file :file:`ErrorLoginHandler` in you extension :file:`Classes` folder
 
-    The Class can look like the Following:
+    The class can look like the following:
 
     .. code-block:: php
 
@@ -43,23 +43,23 @@ If you want that the User get redirected to the Login Page and after login gets 
         }
 
     ..  note::
-        The Class expects that you have a `/login` Page where the DocCheck Login Plugin is included.
-        Incase you have the DocCheck Login included in another Page, just change the URL accordingly.
+        The class expects that you have a `/login` page where the DocCheck Login plugin is included.
+        Incase you have the DocCheck Login included in another page, just change the url accordingly.
 
 
-2.  Navigate in the Typo3 Backend to
+2.  Navigate in the TYPO3 backend to
 
-    `Sites` ➞ `Your Site Configuration` ➞ `Error Handling` ➞ `+Create new`
+    :guilabel:`Sites` ➞ :guilabel:`Your Site Configuration` ➞ :guilabel:`Error Handling` ➞ :guilabel:`+ Create new`
 
-3.  The Configurate should look like the following
+3.  The configurate should look like the following
 
     .. figure:: /Images/error_handler.png
        :class: with-shadow
-       :alt: Example User Folder
+       :alt: Example user folder
        :width: 100%
 
-       Example Configuration
+       Example configuration
 
 4.  Save and enjoy
 
-    Now the User should get redirected back to the requested Url that he tried to access while he was not logged in.
+    Now the user should get redirected back to the requested url that he tried to access while he was not logged in.

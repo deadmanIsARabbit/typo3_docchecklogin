@@ -3,7 +3,7 @@
 .. _best-practice:
 
 ===============
-Best Practices
+Best practices
 ===============
 
 .. toctree::
@@ -21,11 +21,11 @@ Best Practices
 
             ..  rst-class:: card-header h3
 
-                ..  rubric:: :ref:`Inline Login <inline-login>`
+                ..  rubric:: :ref:`Inline login <inline-login>`
 
             ..  container:: card-body
 
-                An example how to use the Login inline.
+                An example how to use the login inline.
 
     ..  container:: col-md-6 pl-0 pr-3 py-3 m-0
 
@@ -33,8 +33,8 @@ Best Practices
 
             ..  rst-class:: card-header h3
 
-                ..  rubric:: :ref:`403 Error Handling <error-handling>`
+                ..  rubric:: :ref:`403 error handling <error-handling>`
 
             ..  container:: card-body
 
-                An example how to configure a Error handler for 403 redirects.
+                An example how to configure an error handler for 403 redirects.

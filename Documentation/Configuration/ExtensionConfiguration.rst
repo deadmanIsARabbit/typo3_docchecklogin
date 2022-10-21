@@ -3,21 +3,21 @@
 .. _extension-configuration:
 
 ========================
-Extension Configuration
+Extension configuration
 ========================
 
-For the Plugin to work properly you need to set up the extension configuration accordingly to your Login Licence and your needs.
+For the plugin to work properly you need to set up the extension configuration accordingly to your login licence and your needs.
 
-To understand better which settings are usable by your Licence the settings are grouped by so. To know what the different Licences are standing for
-please follow `this Page <https://more.doccheck.com/en/industry/login-licenses/>`__.
+To understand better which settings are usable by your licence the settings are grouped by so. To know what the different licences are standing for
+please follow `this page <https://more.doccheck.com/en/industry/login-licenses/>`__.
 
-For the basic functionality, the free DocCheck Basic License should suffice.
+For the basic functionality, the free DocCheck Basic Licence should suffice.
 
-If you dont have a Licence yet and are interested in buying one please contact `industry@doccheck.com`. They will also provide you with test licenses if needed.
+If you don't have a licence yet and you are interested in buying one, please contact `industry@doccheck.com`. They will also provide you with test licenses if needed.
 
-Each Group in the Extension Configuration is based on the group before. The exception is the Crawling Feature that can be used even when you dont have a licence.
+Each group in the extension configuration is based on the group before. The exception is the Crawling-Feature that can be used even when you dont have a licence.
 
-To access the extension configuration navigate in the typo3 backend to `Settings` ➞ `Extension Configuration` ➞ `typo3_DocChecklogin`.
+To access the extension configuration navigate in the TYPO3 backend to :guilabel:`Settings` ➞ :guilabel:`Extension Configuration` ➞ :guilabel:`typo3_DocChecklogin`.
 
 ..  contents::
     :local:
@@ -27,7 +27,7 @@ To access the extension configuration navigate in the typo3 backend to `Settings
 Basic
 ===============
 
-The Basic-Features don't require a Doccheck Login Licence.
+The Basic-Features don't require a DocCheck Login Licence.
 
 .. _confval-dcParam:
 
@@ -38,9 +38,9 @@ dcParam
     :Required: true
     :type: string
 
-    Expected Value of the dc GET Parameter.
+    Expected value of the dc GET-Parameter.
 
-    The Extension will check `$_GET['dc']` for this value after a successful DocCheck Login. Set it to an arbitrary string that can be used as a url parameter.
+    The extension will check :php:`$_GET['dc']` for this value after a successful DocCheck Login. Set it to an arbitrary string that can be used as a url parameter.
 
 .. _confval-dummyUser:
 
@@ -53,7 +53,7 @@ dummyUser
 
     Username of the dummy user to be used with the DocCheck Authentication Service.
 
-    This user will be logged in with your TYPO3 website, whenever a DocCheck User logs in successfully. The dummyuser must be stored in PID as determined in `basic.dummyUserPid`
+    This user will be logged in with your TYPO3 website, whenever a DocCheck user logs in successfully. The dummyuser must be stored in pid as determined in :ref:`basic.dummyUserPid <confval-dummyUserPid>`.
 
 .. _confval-dummyUserPid:
 
@@ -64,9 +64,9 @@ dummyUserPid
     :Required: true
     :type: int
 
-    UID of the page/folder where the dummy user and the user group(s) is stored.
+    Uid of the page/folder where the dummy user and the user group(s) is stored.
 
-    The extension will look for the dummy user or the configured user groups (when using the UniqueKey-Feature) on the page (or storage folder) with this ID.
+    The extension will look for the dummy user or the configured user groups (when using the UniqueKey-Feature) on the page (or storage folder) with this id.
 
 .. _configuration_economy:
 
@@ -75,7 +75,7 @@ Economy
 
 ..  attention::
 
-    For the Economy-Features a paid Licence is needed.
+    For the Economy-Features a paid licence is needed.
 
 
 .. _confval-uniqueKeyEnable:
@@ -87,7 +87,7 @@ uniqueKeyEnable
     :Required: false
     :type: boolean
 
-    Enable the UniqueKey-Features. Creates one Typo3 FE User per Unique Key.
+    Enable the UniqueKey-Feature. Creates one TYPO3 frontend user per unique key.
 
 .. _confval-clientSecret:
 
@@ -98,7 +98,7 @@ clientSecret
     :Required: false (Only needed for the UniqueKey and Personal-Feature)
     :type: string
 
-    Client Secret is needed to establish an OAuth Connection.
+    Client secret is needed to establish an oAuth connection.
 
 .. _confval-uniqueKeyGroup:
 
@@ -109,9 +109,9 @@ uniqueKeyGroup
     :Required: false
     :type: int
 
-    Define the Group ID in which the unique Users get sorted in. This group must be found in the page which you configured in :ref:`basic.dummyUserPid <confval-dummyUserPid>`
+    Define the group id in which the unique users get sorted in. This group must be found in the page which you configured in :ref:`basic.dummyUserPid <confval-dummyUserPid>`.
 
-    This User will be overwritten when the Routing-Feature is enabled.
+    This user will be overwritten when the Routing-Feature is enabled.
 
 .. _confval-routingEnable:
 
@@ -122,9 +122,9 @@ routingEnable
     :Required: false
     :type: boolean
 
-    Use Routing-Feature to route different Values for the "dc" param to different User Groups. Each dcParam will be routed to one frontend user group.
+    Use Routing-Feature to route different values for the "dc" param to different user groups. Each dcParam will be routed to one frontend user group.
 
-    This requires you to set some routes in your DocCheck CReaM Configuration.
+    This requires you to set some routes in your DocCheck CReaM configuration.
 
     Works only in combination with UniqueKey-Feature and overrides :ref:`basic.dcParam <confval-dcParam>` and :ref:`economy.uniqueKeyGroup <confval-uniqueKeyGroup>`
 
@@ -153,7 +153,7 @@ Business
 
 ..  attention::
 
-    For the Business-Features a paid Licence is needed.
+    For the Business-Features a paid licence is needed.
 
 .. _confval-dcPersonalEnable:
 
@@ -164,7 +164,7 @@ dcPersonalEnable
     :Required: false
     :type: boolean
 
-    Add User Specific Data to the created User Account when the Users agrees to it.
+    Add user specific data to the created user account when the users agrees to it.
 
     The UniqueKey-Feature needs to be activated for it to work properly.
 
@@ -173,9 +173,9 @@ dcPersonalEnable
 Crawling
 ===============
 
-The Crawling-Feature allows an external Crawler to Bypass the DocCheck Login.
+The Crawling-Feature allows an external crawler to bypass the DocCheck Login.
 
-A Crawler is a program that visits your website, loads its content and prepares it for searches.
+A crawler is a program that visits your website, loads its content and prepares it for searches.
 This is especially needed when you use your website with the DocCheck Search.
 
 For more information `visit this page <https://crm.DocCheck.com/uploads/assets/other/FS_DC_Industry_Search_Whitepaper_EN.pdf>`__.
@@ -189,7 +189,7 @@ crawlingEnable
     :Required: false
     :type: boolean
 
-    Enabled Crawlers to bypass the DocCheck Login
+    Enabled crawlers to bypass the DocCheck Login
 
 .. _confval-crawlingUser:
 
@@ -200,7 +200,7 @@ crawlingUser
     :Required: false
     :type: string
 
-    Name of the User that will be used for crawling. Defaults to basic.dummyUser
+    Name of the user that will be used for crawling. Defaults to :ref:`basic.dummyUser <confval-dummyUser>`
 
 .. _confval-crawlingIP:
 
@@ -211,4 +211,4 @@ crawlingIP
     :Required: false
     :type: string
 
-    IP of the Crawler. To Bypass the DocCheck Search Crawler user the IP `195.82.66.150`.
+    IP of the crawler. To bypass the DocCheck Search crawler user the IP `195.82.66.150`.

@@ -6,20 +6,20 @@
 TsConfig
 ==================
 
-This Site covers options to configure the plugin.
+This site covers options to configure the plugin.
 
 .. _configuration-custom-template:
 
-Custom View Templates
+Custom view templates
 ====================
 
 .. confval:: templateLayouts
 
     :type: array
 
-    You might want to change the HTML Code that renders the iFrame.
+    You might want to change the HTML code that renders the iFrame.
 
-    To do so, copy the `Resources/Private/Templates/DocCheckAuthentication/` and `Resources/Private/Partials/DocCheckAuthentication/` folder to, for example, your `<yourPathOfChoice>/Templates/DocCheckAuthentication` and set the following in your TYPO3 Setup:
+    To do so, copy the :file:`Resources/Private/Templates/DocCheckAuthentication/` and :file:`Resources/Private/Partials/DocCheckAuthentication/` folder to, for example, your :file:`<yourPathOfChoice>/Templates/DocCheckAuthentication` and set the following in your TYPO3 setup:
 
     Example::
 
@@ -29,7 +29,7 @@ Custom View Templates
 
 .. _configuration-overwrite-loginid:
 
-Overwrite Login ID
+Overwrite login Id
 ====================
 
 .. confval:: loginOverrideId
@@ -37,7 +37,7 @@ Overwrite Login ID
     :type: string
     :Default: null
 
-    This numeric parameter overrides the used Doccheck Login ID. Especially useful for working in multiple environments.
+    This numeric parameter overrides the used DocCheck Login id. Especially useful for working in multiple environments.
 
     Example::
 

@@ -6,15 +6,15 @@
 Hooks
 =============
 
-Following Hooks can be used to extend functionalities of the DocCheck Login Plugin.
+Following hooks can be used to extend functionalities of the DocCheck Login plugin.
 
 
 beforeRedirect
 ===============
 
-This Extension offers the Signal Slot `beforeRedirect`, which is called before a successfully logged-in user will be redirected.
+This extension offers the signal slot `beforeRedirect`, which is called before a successfully logged-in user will be redirected.
 
-Usage from within your extension’s ext_localconf.php:
+Usage from within your extension's :file:`ext_localconf.php`:
 
 .. code-block:: php
 

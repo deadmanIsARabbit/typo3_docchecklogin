@@ -1,7 +1,7 @@
 .. include:: /Includes.rst.txt
 
 ======================
-Typo3 DocCheck Login
+TYPO3 DocCheck Login
 ======================
 
 :Extension key:
@@ -17,11 +17,10 @@ Typo3 DocCheck Login
    en
 
 :Author:
-   Sabrina Zwirner (Antwerpes ag)
+   Sabrina Zwirner
 
 :License:
-   This document is published under the Open Content License
-    available from http://www.opencontent.org/opl.shtml
+   This document is published under the Open Content License available from http://www.opencontent.org/opl.shtml
 
 :Rendered:
    |today|
@@ -80,7 +79,7 @@ The content of this document is related to TYPO3, a GNU/GPL CMS/Framework availa
 
             ..  container:: card-body
 
-               Hooks that can be used to extend functionalities of the DocCheck Login Plugin
+               Hooks that can be used to extend functionalities of the DocCheck Login plugin
 
     ..  container:: col-md-6 pl-0 pr-3 py-3 m-0
 
@@ -88,11 +87,11 @@ The content of this document is related to TYPO3, a GNU/GPL CMS/Framework availa
 
             ..  rst-class:: card-header h3
 
-                ..  rubric:: :ref:`Best Practices <best-practice>`
+                ..  rubric:: :ref:`Best practices <best-practice>`
 
             ..  container:: card-body
 
-              Best Practices and Code Examples
+              Best practices and code examples
 
 .. Table of Contents
 

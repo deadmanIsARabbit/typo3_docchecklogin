@@ -6,7 +6,7 @@
 ExtTables
 ==================
 
-The Plugin adds four new DB fields to the fe_users Table.
+The plugin adds four new database fields to the fe_users table.
 
 ..  contents::
     :local:
@@ -14,7 +14,7 @@ The Plugin adds four new DB fields to the fe_users Table.
 
 .. _configuration-table:
 
-Fe_users Table Columns
+fe_users table columns
 ========================
 
 .. _confval-tx_typo3docchecklogin_profession:
@@ -25,9 +25,9 @@ tx_typo3docchecklogin_profession
 
     :type: int
 
-    Stores the Profession of the User when the Personal-Feature is enabled.
+    Stores the profession of the user when the Personal-Feature is enabled.
 
-    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en&format=json>`__.
+    To get a list for what the ids stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en&format=json>`__.
 
     You can change the parameter `language` in the url to get the results for different languages.
 
@@ -40,9 +40,9 @@ tx_typo3docchecklogin_profession_parent
 
     :type: int
 
-    Stores the Parent Profession of the User when the Personal-Feature is enabled.
+    Stores the parent profession of the user when the Personal-Feature is enabled.
 
-    To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en&format=json>`__.
+    To get a list for what the ids stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=profession&language=en&format=json>`__.
 
     You can change the parameter `language` in the url to get the results for different languages.
 
@@ -54,7 +54,7 @@ tx_typo3docchecklogin_discipline
 
     :type: int
 
-    Stores the Discipline of the User when the Personal-Feature is enabled.
+    Stores the discipline of the User when the Personal-Feature is enabled.
 
     To get a List for what the IDs stands for `see here <https://service.doccheck.com/service/info/codes_v2.php?scope=discipline&language=en&format=json>`__.
 
@@ -68,7 +68,7 @@ tx_typo3docchecklogin_gender
 
     :type: varchar
 
-    Stores the Gender of the User when the Personal-Feature is enabled.
+    Stores the gender of the user when the Personal-Feature is enabled.
 
     *   m = male
     *   f = female

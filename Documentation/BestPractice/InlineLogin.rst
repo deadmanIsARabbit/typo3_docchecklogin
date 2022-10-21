@@ -2,13 +2,13 @@
 .. _inline-login:
 
 ===============
-Inline Login
+Inline login
 ===============
 
-If you want to use the Login Template directly inside a Fluid Template, for example to use it in a Popup,
-you can do so by creating a lib Element.
+If you want to use the login template directly inside a fluid template, for example to use it in a popup,
+you can do so by creating a lib element.
 
-Got to your typoscript Configuration and add + edit the following code.
+Got to your typoscript configuration and add & edit the following code.
 
 .. code-block:: php
 
@@ -29,7 +29,7 @@ Got to your typoscript Configuration and add + edit the following code.
         settings.redirect = 1
     }
 
-Afterwards you can use the Code in the Fluid Template like the following:
+Afterwards you can use the code in the fluid template like the following:
 
 .. code-block:: php
 

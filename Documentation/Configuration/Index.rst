@@ -23,11 +23,11 @@ Configuration
 
             ..  rst-class:: card-header h3
 
-                ..  rubric:: :ref:`Extension Configuration <extension-configuration>`
+                ..  rubric:: :ref:`Extension configuration <extension-configuration>`
 
             ..  container:: card-body
 
-                Here you can find an explanation about all Extension Settings.
+                Here you can find an explanation about all extension settings.
 
     ..  container:: col-md-6 pl-0 pr-3 py-3 m-0
 
@@ -39,7 +39,7 @@ Configuration
 
             ..  container:: card-body
 
-                Here you can find an explanation about the Table Field we are adding.
+                Here you can find an explanation about the table fields that we are adding.
 
     ..  container:: col-md-6 pl-0 pr-3 py-3 m-0
 
@@ -51,7 +51,7 @@ Configuration
 
             ..  container:: card-body
 
-                This Site covers options to configure the plugin.
+                This site covers options to configure the plugin.
 
     ..  container:: col-md-6 pl-0 pr-3 py-3 m-0
 
@@ -59,7 +59,7 @@ Configuration
 
             ..  rst-class:: card-header h3
 
-                ..  rubric:: :ref:`Test Login User <configuration-testuser>`
+                ..  rubric:: :ref:`Test login user <configuration-testuser>`
 
             ..  container:: card-body
 
