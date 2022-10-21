@@ -10,6 +10,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class DocCheckAuthenticationService extends AuthenticationService
 {
@@ -48,7 +49,7 @@ class DocCheckAuthenticationService extends AuthenticationService
         }
 
         // if we are not using uniquekey feature, just get the dummy user...
-        if ($dcCode && $dcClientSecret && $this->extConf['uniqueKeyEnable']) {
+        if ($dcCode && $this->extConf['uniqueKeyEnable']) {
             $user = $this->getUniqueUser($dcVal, $dcCode, $dcClientSecret, $dcLoginId);
         } else {
             $user = $this->getDummyUser();
@@ -102,15 +103,21 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function getUniqueUser($dcVal, $dcCode, $dcClientSecret, $dcLoginId)
     {
-        $oauth = new OauthUtility();
-        $authenticateUser = $oauth->validateToken($dcLoginId, $dcClientSecret, $dcCode);
+        //Go Over Oauth when a clientSecret is provided
+        $authenticateUser = null;
+        $userData = null;
+        if($dcClientSecret){
+            $oauth = new OauthUtility();
+            $authenticateUser = $oauth->validateToken($dcLoginId, $dcClientSecret, $dcCode);
 
-        if (! $authenticateUser) {
-            throw new Exception('DocCheck Authentication: User coudnt get authenticated.');
+            if (! $authenticateUser) {
+                throw new Exception('DocCheck Authentication: User coudnt get authenticated.');
+            }
+
+            $userData = $oauth->getUserData();
         }
 
-        $userData = $oauth->getUserData();
-        $uniqKey = $userData->uniquekey;
+        $uniqKey = $_GET['uniquekey'] ?? null;
 
         if (! $this->isValidMd5($uniqKey)) {
             throw new Exception('DocCheck Authentication: Unique key is not valid.');
@@ -132,8 +139,8 @@ class DocCheckAuthenticationService extends AuthenticationService
             if ($userObject['usergroup'] !== $group) {
                 $userObject = $this->updateGroupId($userObject, $group);
             }
-            // cool, now in case we have Personal enabled, save the personal data in the database.
-            if ($this->extConf['dcPersonalEnable']) {
+            // now in case we have Personal enabled and a valid authenticated User, save the personal data in the database.
+            if ($authenticateUser && $this->extConf['dcPersonalEnable']) {
                 $userObject = $this->augmentDcPersonal($userObject, $userData);
             }
 
