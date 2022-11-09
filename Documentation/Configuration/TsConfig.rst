@@ -13,6 +13,9 @@ This site covers options to configure the plugin.
 Custom view templates
 ====================
 
+..  attention::
+    Please note: DocCheck only supports the usage of their login forms which are provided via their domain.
+
 .. confval:: templateLayouts
 
     :type: array
@@ -29,7 +32,7 @@ Custom view templates
 
 .. _configuration-overwrite-loginid:
 
-Overwrite login Id
+Overwrite Login ID
 ====================
 
 .. confval:: loginOverrideId
@@ -37,7 +40,7 @@ Overwrite login Id
     :type: string
     :Default: null
 
-    This numeric parameter overrides the used DocCheck Login id. Especially useful for working in multiple environments.
+    This numeric parameter overrides the used DocCheck Login ID. Especially useful for working in multiple environments.
 
     Example::
 

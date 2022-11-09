@@ -13,7 +13,7 @@ Installation
 Before you start
 -------------------------
 
-Before you can start to implement the DocCheck Login to your TYPO3 website, you will need a valid DocCheck Login id, as well as access to `DocCheck CReaM <http://crm.doccheck.com/com/>`__, the login configuration backend.
+Before you can start to implement the DocCheck Login to your TYPO3 website, you will need a valid DocCheck Login ID, as well as access to `DocCheck CReaM <http://crm.doccheck.com/com/>`__, the login configuration backend.
 For detailed instructions please read the `technical manual <https://more.doccheck.com/fileadmin/user_upload/files/industry/b2b-landingpage/industry-erste-hilfe-kasten-technical_manual_en.pdf>`__.
 
 Example CReaM settings
@@ -62,7 +62,7 @@ Step-by-step instruction
 
 5. Edit the plugin settings
 
-   Under the tab :guilabel:`Plugins` set the login id for the plugin to work properly. To set a global login id please see :ref:`here <configuration-overwrite-loginid>`
+   Under the tab :guilabel:`Plugins` set the Login ID for the plugin to work properly. To set a global Login ID please see :ref:`here <configuration-overwrite-loginid>`
 
 6. Create a user folder
 

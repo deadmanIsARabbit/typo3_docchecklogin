@@ -75,10 +75,10 @@ Crawling
 """"""""""""""
 .. figure:: /Images/settings_crawling.png
    :class: with-shadow
-   :alt: Configuration screen: Crwaling
+   :alt: Configuration screen: Crawling
    :width: 100%
 
-   Configuration screen: Crwaling
+   Configuration screen: Crawling
 
 .. _plugin-configuration:
 
@@ -88,10 +88,10 @@ The settings within the plugin flexform
 
 .. figure:: /Images/plugin_settings.png
    :class: with-shadow
-   :alt: Configuration screen: Crwaling
+   :alt: Configuration screen: Crawling
    :width: 100%
 
-   Configuration screen: Crwaling
+   Configuration screen: Crawling
 
 Frontend view
 -------------------
