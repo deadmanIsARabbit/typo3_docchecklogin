@@ -284,7 +284,6 @@ class DocCheckAuthenticationService extends AuthenticationService
                 $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) $this->extConf['dummyUserPid']);
             }
         }
-
         if (! $grp) {
             // whoops, no group found
             throw new Exception('DocCheck Authentication: Could not find front end user group '.$grp);
@@ -394,7 +393,8 @@ class DocCheckAuthenticationService extends AuthenticationService
         }
         // find the correct group
         $expectedGroupId = $this->getUniqueUserGroupId($dcVal);
-        $actualGroupId = $user['usergroup'];
+        $actualGroupId = (int)$user['usergroup'];
+
         // the given dcval does not match any configured group id
         if (! $actualGroupId) {
             return false;
