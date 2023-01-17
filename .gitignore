@@ -1,2 +1,4 @@
+.idea
+docker-compose.yaml
 composer.lock
 Documentation-GENERATED-temp

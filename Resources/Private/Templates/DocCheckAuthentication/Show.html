@@ -1,9 +1,48 @@
-<f:if condition="{loggedIn}">
+<f:if condition="{configError}">
     <f:then>
-       <f:render partial="LoggedIn"/>
+        <div>
+            Please check your config!
+        </div>
+        <ul>
+            <f:if condition="{configError.dcParam} == 'empty'">
+                <li>dcParam is empty</li>
+            </f:if>
+            <f:if condition="{configError.dummyUser} == 'empty'">
+                <li>dummyUser is empty</li>
+            </f:if>
+            <f:if condition="{configError.dummyUser} == 'not found'">
+                <li>dummyUser not found</li>
+            </f:if>
+            <f:if condition="{configError.dummyUserPid} == 'empty'">
+                <li>dummyUserPid is empty</li>
+            </f:if>
+            <f:if condition="{configError.dummyUserPid} == 'not found'">
+                <li>dummyUserPid not found</li>
+            </f:if>
+            <f:if condition="{configError.clientSecret} == 'empty'">
+                <li>clientSecret is empty</li>
+            </f:if>
+            <f:if condition="{configError.uniqueKeyGroup} == 'empty'">
+                <li>uniqueKeyGroup is empty</li>
+            </f:if>
+            <f:if condition="{configError.uniqueKeyGroup} == 'not found'">
+                <li>uniqueKeyGroup not found</li>
+            </f:if>
+            <f:if condition="{configError.routingMap} == 'empty'">
+                <li>routingMap is empty</li>
+            </f:if>
+        </ul>
     </f:then>
     <f:else>
-        <f:render partial="LoggedOut" arguments="{_all}"/>
+        <f:if condition="{loggedIn}">
+            <f:then>
+               <f:render partial="LoggedIn"/>
+            </f:then>
+            <f:else>
+                <f:render partial="LoggedOut" arguments="{_all}"/>
+            </f:else>
+        </f:if>
     </f:else>
 </f:if>
+
 
