@@ -38,6 +38,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
@@ -48,6 +49,21 @@ use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 class DocCheckAuthenticationController extends ActionController
 {
     protected $extConf = [];
+
+    /**
+     * pageRepository
+     *
+     * @var PageRepository
+     */
+    protected $pageRepository = null;
+
+    /**
+     * @param PageRepository $pageRepository
+     */
+    public function injectPageRepository(PageRepository $pageRepository)
+    {
+        $this->pageRepository = $pageRepository;
+    }
 
     /**
      * Main show Action.
@@ -70,6 +86,11 @@ class DocCheckAuthenticationController extends ActionController
         $this->view->assignMultiple([
             'loggedIn' => $loggedIn,
         ]);
+
+        $configErrors = $this->checkConfig();
+        if (count($configErrors) > 0) {
+            $this->view->assign('configError', $configErrors);
+        }
 
         return $this->htmlResponse();
     }
@@ -190,6 +211,63 @@ class DocCheckAuthenticationController extends ActionController
         }
 
         return $redirectUri;
+    }
+
+    protected function checkConfig() {
+        $errors = [];
+        if ($this->extConf['dcParam'] === '') {
+            $errors['dcParam'] = 'empty';
+        }
+        if ($this->extConf['dummyUser'] === '') {
+            $errors['dummyUser'] = 'empty';
+        } else {
+            // check if user exists
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_users');
+            $statement = $queryBuilder->select('uid')
+                ->from('fe_users')
+                ->where(
+                    $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($this->extConf['dummyUser'])),
+                )
+                ->execute()->fetchAssociative();
+            if (!$statement) {
+                $errors['dummyUser'] = 'not found';
+            }
+        }
+        if ($this->extConf['dummyUserPid'] === '') {
+            $errors['dummyUserPid'] = 'empty';
+        } else {
+            // check if pid exists
+            $page = $this->pageRepository->getPage(intval($this->extConf['dummyUserPid']));
+            if (count($page) === 0) {
+                $errors['dummyUserPid'] = 'not found';
+            }
+        }
+        if ($this->extConf['uniqueKeyEnable'] === '1' && $this->extConf['clientSecret'] === '') {
+            $errors['clientSecret'] = 'empty';
+        }
+        if ($this->extConf['uniqueKeyEnable'] === '1' && $this->extConf['uniqueKeyGroup'] === '') {
+            $errors['uniqueKeyGroup'] = 'empty';
+        } elseif ($this->extConf['uniqueKeyEnable'] === '1' && $this->extConf['uniqueKeyGroup'] !== '') {
+            // check if usergroup exists
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
+            $statement = $queryBuilder->select('uid')
+                ->from('fe_groups')
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(intval($this->extConf['uniqueKeyGroup']))),
+                )
+                ->execute()->fetchAssociative();
+            if (!$statement) {
+                $errors['uniqueKeyGroup'] = 'not found';
+            }
+        }
+        if ($this->extConf['routingEnable'] === '1' && $this->extConf['routingMap'] === '') {
+            $errors['routingMap'] = 'empty';
+        }
+        if ($this->extConf['crawlingEnable'] === '1' && $this->extConf['crawlingIP'] === '') {
+            $errors['crawlingIP'] = 'empty';
+        }
+
+        return $errors;
     }
 
     protected function initializeAction(): void
