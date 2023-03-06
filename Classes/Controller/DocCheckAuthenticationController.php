@@ -51,16 +51,13 @@ class DocCheckAuthenticationController extends ActionController
     protected $extConf = [];
 
     /**
-     * pageRepository
+     * pageRepository.
      *
      * @var PageRepository
      */
-    protected $pageRepository = null;
+    protected $pageRepository;
 
-    /**
-     * @param PageRepository $pageRepository
-     */
-    public function injectPageRepository(PageRepository $pageRepository)
+    public function injectPageRepository(PageRepository $pageRepository): void
     {
         $this->pageRepository = $pageRepository;
     }
@@ -88,6 +85,7 @@ class DocCheckAuthenticationController extends ActionController
         ]);
 
         $configErrors = $this->checkConfig();
+
         if (count($configErrors) > 0) {
             $this->view->assign('configError', $configErrors);
         }
@@ -102,7 +100,7 @@ class DocCheckAuthenticationController extends ActionController
      */
     public function loggedIn(): void
     {
-        $redirectToUri = $this->getRedirectUriFromCookie() ?: $this->getRedirectUriFromFeLogin();
+        $redirectToUri = $this->getRedirectUriFromFeLogin() ?: $this->getRedirectUriFromCookie();
 
         if ($redirectToUri) {
             // Hook To overwrite the redirect
@@ -129,16 +127,16 @@ class DocCheckAuthenticationController extends ActionController
         $settings = $this->settings;
         $redirectUrl = $getParameter['redirect_url'] ?? null;
         // ... or if the redirect-option is chosen in the plugin
-        if (!$redirectUrl && array_key_exists('redirect', $settings)) {
-            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int)$settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
+        if (! $redirectUrl && array_key_exists('redirect', $settings)) {
+            $redirectUrl = $this->uriBuilder->reset()->setTargetPageUid((int) $settings['redirect'])->setLinkAccessRestrictedPages(true)->setCreateAbsoluteUri(true)->build();
         }
 
         if ($redirectUrl) {
             // store as cookie and expire in 10 minutes
-            setcookie('docchecklogin_redirect', $redirectUrl, (int)gmdate('U') + 600, '/');
+            setcookie('docchecklogin_redirect', $redirectUrl, (int) gmdate('U') + 600, '/');
         } else {
             // delete an older cookie if no longer needed
-            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
         }
 
         if (array_key_exists('loginId', $settings)) {
@@ -151,7 +149,7 @@ class DocCheckAuthenticationController extends ActionController
         if ('custom' === $this->settings['loginLayout']) {
             $templateKey = $this->settings['customLayout'];
         } else {
-            $templateKey = $this->settings['loginLayout'] . '_red';
+            $templateKey = $this->settings['loginLayout'].'_red';
         }
 
         $this->view->assignMultiple([
@@ -170,7 +168,7 @@ class DocCheckAuthenticationController extends ActionController
         if (array_key_exists('docchecklogin_redirect', $_COOKIE)) {
             // clear the cookie
             $redirectUri = $_COOKIE['docchecklogin_redirect'];
-            setcookie('docchecklogin_redirect', '', (int)gmdate('U') - 3600, '/');
+            setcookie('docchecklogin_redirect', '', (int) gmdate('U') - 3600, '/');
 
             return $redirectUri;
         }
@@ -207,18 +205,21 @@ class DocCheckAuthenticationController extends ActionController
         }
 
         if ($redirectToPid) {
-            $redirectUri = $this->uriBuilder->reset()->setTargetPageUid($redirectToPid)->setCreateAbsoluteUri(true)->build();
+            $redirectUri = $this->uriBuilder->reset()->setTargetPageUid((int) $redirectToPid)->setCreateAbsoluteUri(true)->build();
         }
 
         return $redirectUri;
     }
 
-    protected function checkConfig() {
+    protected function checkConfig()
+    {
         $errors = [];
-        if ($this->extConf['dcParam'] === '') {
+
+        if ('' === $this->extConf['dcParam']) {
             $errors['dcParam'] = 'empty';
         }
-        if ($this->extConf['dummyUser'] === '') {
+
+        if ('' === $this->extConf['dummyUser']) {
             $errors['dummyUser'] = 'empty';
         } else {
             // check if user exists
@@ -229,41 +230,49 @@ class DocCheckAuthenticationController extends ActionController
                     $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($this->extConf['dummyUser'])),
                 )
                 ->execute()->fetchAssociative();
-            if (!$statement) {
+
+            if (! $statement) {
                 $errors['dummyUser'] = 'not found';
             }
         }
-        if ($this->extConf['dummyUserPid'] === '') {
+
+        if ('' === $this->extConf['dummyUserPid']) {
             $errors['dummyUserPid'] = 'empty';
         } else {
             // check if pid exists
-            $page = $this->pageRepository->getPage(intval($this->extConf['dummyUserPid']));
-            if (count($page) === 0) {
+            $page = $this->pageRepository->getPage((int) ($this->extConf['dummyUserPid']));
+
+            if (0 === count($page)) {
                 $errors['dummyUserPid'] = 'not found';
             }
         }
-        if ($this->extConf['uniqueKeyEnable'] === '1' && $this->extConf['clientSecret'] === '') {
+
+        if ('1' === $this->extConf['uniqueKeyEnable'] && '' === $this->extConf['clientSecret']) {
             $errors['clientSecret'] = 'empty';
         }
-        if ($this->extConf['uniqueKeyEnable'] === '1' && $this->extConf['uniqueKeyGroup'] === '') {
+
+        if ('1' === $this->extConf['uniqueKeyEnable'] && '' === $this->extConf['uniqueKeyGroup']) {
             $errors['uniqueKeyGroup'] = 'empty';
-        } elseif ($this->extConf['uniqueKeyEnable'] === '1' && $this->extConf['uniqueKeyGroup'] !== '') {
+        } elseif ('1' === $this->extConf['uniqueKeyEnable'] && '' !== $this->extConf['uniqueKeyGroup']) {
             // check if usergroup exists
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');
             $statement = $queryBuilder->select('uid')
                 ->from('fe_groups')
                 ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter(intval($this->extConf['uniqueKeyGroup']))),
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int) ($this->extConf['uniqueKeyGroup']))),
                 )
                 ->execute()->fetchAssociative();
-            if (!$statement) {
+
+            if (! $statement) {
                 $errors['uniqueKeyGroup'] = 'not found';
             }
         }
-        if ($this->extConf['routingEnable'] === '1' && $this->extConf['routingMap'] === '') {
+
+        if ('1' === $this->extConf['routingEnable'] && '' === $this->extConf['routingMap']) {
             $errors['routingMap'] = 'empty';
         }
-        if ($this->extConf['crawlingEnable'] === '1' && $this->extConf['crawlingIP'] === '') {
+
+        if ('1' === $this->extConf['crawlingEnable'] && '' === $this->extConf['crawlingIP']) {
             $errors['crawlingIP'] = 'empty';
         }
 

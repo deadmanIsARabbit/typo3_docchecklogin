@@ -6,7 +6,7 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Utility\ExtensionUtility;
 
 defined('TYPO3') || exit;
-(function () {
+(function (): void {
     ExtensionUtility::configurePlugin(
         'Typo3Docchecklogin',
         'DocCheckAuthentication',
@@ -40,7 +40,7 @@ defined('TYPO3') || exit;
     );
 
     ExtensionManagementUtility::addService(
-    // Extension Key
+        // Extension Key
         'typo3_docchecklogin',
         // Service type
         'auth',
@@ -62,5 +62,4 @@ defined('TYPO3') || exit;
             'className' => DocCheckAuthenticationService::class,
         ]
     );
-
 })();

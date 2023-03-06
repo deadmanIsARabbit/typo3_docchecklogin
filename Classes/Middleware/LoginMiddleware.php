@@ -2,7 +2,6 @@
 
 namespace Antwerpes\Typo3Docchecklogin\Middleware;
 
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -58,14 +57,6 @@ class LoginMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    /**
-     * @param $uid
-     *
-     * @return false|mixed[]
-     *
-     * @throws DBALException
-     * @throws \Doctrine\DBAL\Driver\Exception
-     */
     public function getUserGroup($uid)
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_groups');

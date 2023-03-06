@@ -3,7 +3,6 @@
 namespace Antwerpes\Typo3Docchecklogin\Utility;
 
 use TYPO3\CMS\Backend\Routing\Exception\InvalidRequestTokenException;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class OauthUtility
 {

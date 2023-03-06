@@ -10,7 +10,6 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class DocCheckAuthenticationService extends AuthenticationService
 {
@@ -103,10 +102,11 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function getUniqueUser($dcVal, $dcCode, $dcClientSecret, $dcLoginId)
     {
-        //Go Over Oauth when a clientSecret is provided
+        // Go Over Oauth when a clientSecret is provided
         $authenticateUser = null;
         $userData = null;
-        if($dcClientSecret){
+
+        if ($dcClientSecret) {
             $oauth = new OauthUtility();
             $authenticateUser = $oauth->validateToken($dcLoginId, $dcClientSecret, $dcCode);
 
@@ -275,7 +275,6 @@ class DocCheckAuthenticationService extends AuthenticationService
     protected function getUniqueUserGroupId($dcVal)
     {
         $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) $this->extConf['dummyUserPid']);
-
         // is routing enabled?
         if ($this->extConf['routingEnable']) {
             $grp = $this->getRoutedGroupId($dcVal);
@@ -284,6 +283,7 @@ class DocCheckAuthenticationService extends AuthenticationService
                 $grp = $this->fetchDummyUserGroup($this->extConf['dummyUser'], (int) $this->extConf['dummyUserPid']);
             }
         }
+
         if (! $grp) {
             // whoops, no group found
             throw new Exception('DocCheck Authentication: Could not find front end user group '.$grp);
@@ -392,11 +392,11 @@ class DocCheckAuthenticationService extends AuthenticationService
             return 100;
         }
         // find the correct group
-        $expectedGroupId = $this->getUniqueUserGroupId($dcVal);
-        $actualGroupId = (int)$user['usergroup'];
+        $expectedGroupId = (string) $this->getUniqueUserGroupId($dcVal);
+        $actualGroupId = (string) $user['usergroup'];
 
         // the given dcval does not match any configured group id
-        if (! $actualGroupId) {
+        if ($actualGroupId === '' || $actualGroupId === '0') {
             return false;
         }
 
@@ -426,8 +426,8 @@ class DocCheckAuthenticationService extends AuthenticationService
      */
     protected function isDummyUser($user)
     {
-       return (int) $user['pid'] === (int) $this->extConf['dummyUserPid']
-            && $user['username'] === $this->extConf['dummyUser'];
+        return (int) $user['pid'] === (int) $this->extConf['dummyUserPid']
+             && $user['username'] === $this->extConf['dummyUser'];
     }
 
     /**
