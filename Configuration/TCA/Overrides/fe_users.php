@@ -25,6 +25,7 @@ foreach ($numberColumns as $column) {
         'config' => [
             'type' => 'input',
             'eval' => 'num',
+            'default' => 0
         ],
     ];
 }
