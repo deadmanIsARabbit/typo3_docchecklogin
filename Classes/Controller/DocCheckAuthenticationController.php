@@ -219,20 +219,22 @@ class DocCheckAuthenticationController extends ActionController
             $errors['dcParam'] = 'empty';
         }
 
-        if ('' === $this->extConf['dummyUser']) {
-            $errors['dummyUser'] = 'empty';
-        } else {
-            // check if user exists
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_users');
-            $statement = $queryBuilder->select('uid')
-                ->from('fe_users')
-                ->where(
-                    $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($this->extConf['dummyUser'])),
-                )
-                ->execute()->fetchAssociative();
+        if ('1' !== $this->extConf['uniqueKeyEnable']) {
+            if ('' === $this->extConf['dummyUser']) {
+                $errors['dummyUser'] = 'empty';
+            } else {
+                // check if user exists
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('fe_users');
+                $statement = $queryBuilder->select('uid')
+                    ->from('fe_users')
+                    ->where(
+                        $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($this->extConf['dummyUser'])),
+                    )
+                    ->execute()->fetchAssociative();
 
-            if (! $statement) {
-                $errors['dummyUser'] = 'not found';
+                if (! $statement) {
+                    $errors['dummyUser'] = 'not found';
+                }
             }
         }
 
