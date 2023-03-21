@@ -2,6 +2,10 @@
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
+$selectColumns = [];
+$numberColumns = [];
+$tempColumns = [];
+
 $selectColumns = [
     'tx_typo3docchecklogin_gender' => [
         'LLL:EXT:typo3_docchecklogin/Resources/Private/Language/locallang_backend.xlf:user.tx_typo3docchecklogin_gender.male' => 'm',
@@ -25,6 +29,7 @@ foreach ($numberColumns as $column) {
         'config' => [
             'type' => 'input',
             'eval' => 'num',
+            'default' => 0,
         ],
     ];
 }
