@@ -396,7 +396,7 @@ class DocCheckAuthenticationService extends AuthenticationService
         $actualGroupId = (string) $user['usergroup'];
 
         // the given dcval does not match any configured group id
-        if ($actualGroupId === '' || $actualGroupId === '0') {
+        if ('' === $actualGroupId || '0' === $actualGroupId) {
             return false;
         }
 

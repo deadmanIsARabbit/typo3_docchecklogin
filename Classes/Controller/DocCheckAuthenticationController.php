@@ -240,7 +240,7 @@ class DocCheckAuthenticationController extends ActionController
             $errors['dummyUserPid'] = 'empty';
         } else {
             // check if pid exists
-            $page = $this->pageRepository->getPage((int) ($this->extConf['dummyUserPid']));
+            $page = $this->pageRepository->getPage((int) $this->extConf['dummyUserPid']);
 
             if (0 === count($page)) {
                 $errors['dummyUserPid'] = 'not found';
@@ -259,7 +259,7 @@ class DocCheckAuthenticationController extends ActionController
             $statement = $queryBuilder->select('uid')
                 ->from('fe_groups')
                 ->where(
-                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int) ($this->extConf['uniqueKeyGroup']))),
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter((int) $this->extConf['uniqueKeyGroup'])),
                 )
                 ->execute()->fetchAssociative();
 
