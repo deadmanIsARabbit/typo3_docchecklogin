@@ -46,6 +46,7 @@ Overwrite Login ID
 
        [like(request.getNormalizedParams().getHttpHost(), '*stage.domain.com')]
             plugin.tx_typo3docchecklogin.settings.loginOverrideId = 1111111111
+            plugin.tx_typo3docchecklogin_doccheckauthentication < plugin.tx_typo3docchecklogin
        [global]
 
 
